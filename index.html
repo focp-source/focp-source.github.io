@@ -78,6 +78,35 @@
             font-weight: normal;
             font-style: italic;
         }
+
+        .image-gallery {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            margin-bottom: 24px;
+        }
+
+        .image-container {
+            flex: 1;
+            min-width: 250px;  
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 4px;  
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);  
+        }
+
+        .image-caption {
+            font-size: 0.95rem;
+            color: #555555;
+            margin-top: 8px;
+            text-align: left;
+            font-style: italic;
+        }
         
         .facilitated-studies-box {
             background-color: #fcfcfc; 
@@ -272,6 +301,21 @@
         targets requires major technological and lifestyle shifts. Managing this transition effectively relies on a sound understanding of atmospheric processes and robust 
         climate predictions.
     </p>     
+
+     <h2>Places</h2>
+    
+    <div class="image-gallery">
+        <div class="image-container">
+            <img src="Pont-Neuf.jpg" alt="Beschreibung von Bild 1">
+            <div class="image-caption">Pont Neuf in Paris</div>
+        </div>
+
+        <!-- NEU: Bild 2 -->
+        <div class="image-container">
+            <img src="Lake-in-Wilderness.jpg" alt="Beschreibung von Bild 2">
+            <div class="image-caption">Lake in Wilderness near Boulder</div>
+        </div>
+    </div>
 
     <div class="contact-section-container">
         <div class="contact-content">
