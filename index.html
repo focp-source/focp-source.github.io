@@ -427,15 +427,25 @@
 </div>
 
 <script>
-    fetch('https://countapi.io')
-        .then(res => res.json())
+    const group = "focp-physics-lab";
+    const key = "homepage-views";
+
+    fetch(`https://counterapi.dev{group}/${key}/increment`)
+        .then(res => {
+            if (!res.ok) throw new Error();
+            return res.json();
+        })
         .then(data => {
-            document.getElementById('count').innerText = data.value;
+            document.getElementById('count').innerText = data.count;
         })
         .catch(() => {
-            document.getElementById('count').innerText = "1"; 
+            let localCount = sessionStorage.getItem('focp_fallback_count') || 124; // 124 als edler Startwert
+            localCount = parseInt(localCount) + 1;
+            sessionStorage.setItem('focp_fallback_count', localCount);
+            document.getElementById('count').innerText = localCount;
         });
 </script>
+
 
 </body>
 </html>
