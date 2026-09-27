@@ -427,8 +427,8 @@
 </div>
 
 <script>
-    const group = "focp-physics-lab";
-    const key = "homepage-views";
+    const group = "focp-physics-lab-2026";
+    const key = "page-views";
 
     fetch(`https://counterapi.dev{group}/${key}/increment`)
         .then(res => {
@@ -439,12 +439,13 @@
             document.getElementById('count').innerText = data.count;
         })
         .catch(() => {
-            let localCount = sessionStorage.getItem('focp_fallback_count') || 124; // 124 als edler Startwert
+            let localCount = sessionStorage.getItem('focp_fallback_count') || 0;
             localCount = parseInt(localCount) + 1;
             sessionStorage.setItem('focp_fallback_count', localCount);
             document.getElementById('count').innerText = localCount;
         });
 </script>
+
 
 
 </body>
