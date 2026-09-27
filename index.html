@@ -435,22 +435,28 @@
     Page views: <span id="count">...</span>
 </div>
 
-<h2>Contact</h2>
-<p>Hier folgen Ihre Kontaktinformationen...</p>
+<script>
+    const url = "https://supabase.co";
+    
+    const headers = {
+        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6bWR2YnlqeHRzY3h1enZ4eXVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQwODAwMDAsImV4cCI6MjAyNTY0MDAwMH0.1a8F9XzR3X8Y_xX9v_zX7vX8X9vX_zX7vX8X9vX_zX7",
+        "Content-Type": "application/json"
+    };
 
-<div class="visitor-counter">
-    Page views: 
-    <script type="text/javascript" src="https://optistats.ovh"></script>
-    <noscript>
-        <a href="https://www.freecounterstat.com" title="free hit counter"><img src="https://optistats.ovh" border="0" title="free hit counter" alt="free hit counter"></a>
-    </noscript>
-    <span id="count">1</span>
-</div>
-
-
-
-
-
+    fetch(url, { method: "POST", headers: headers })
+        .then(res => res.json())
+        .then(currentCount => {
+            if (currentCount && !isNaN(currentCount)) {
+                document.getElementById('count').innerText = currentCount;
+            }
+        })
+        .catch(() => {
+            let localCount = localStorage.getItem('focp_fallback') || 1;
+            localCount = parseInt(localCount) + 1;
+            localStorage.setItem('focp_fallback', localCount);
+            document.getElementById('count').innerText = localCount;
+        });
+</script>
 
 </body>
 </html>
