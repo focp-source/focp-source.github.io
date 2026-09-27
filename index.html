@@ -427,24 +427,25 @@
 </div>
 
 <script>
-    const group = "focp-physics-lab-2026";
-    const key = "page-views";
+    const siteId = "forstenried-cloud-physics-lab";
 
-    fetch(`https://counterapi.dev{group}/${key}/increment`)
+    fetch(`https://getloli.com{siteId}?theme=asoul`)
         .then(res => {
             if (!res.ok) throw new Error();
             return res.json();
         })
         .then(data => {
-            document.getElementById('count').innerText = data.count;
+            const globalCount = data.value || 1;
+            document.getElementById('count').innerText = globalCount;
         })
         .catch(() => {
-            let localCount = sessionStorage.getItem('focp_fallback_count') || 0;
+            let localCount = localStorage.getItem('focp_global_fallback') || 0;
             localCount = parseInt(localCount) + 1;
-            sessionStorage.setItem('focp_fallback_count', localCount);
+            localStorage.setItem('focp_global_fallback', localCount);
             document.getElementById('count').innerText = localCount;
         });
 </script>
+
 
 
 
