@@ -196,6 +196,18 @@
             margin: 60px 0 40px 0;
         }
 
+        .visitor-counter {
+            font-size: 0.9rem;
+            color: #888888;
+            margin-top: 30px;
+            font-style: italic;
+            border-top: 1px dashed #e5e5e5;
+            padding-top: 15px;
+            display: block;       
+            text-align: right;  
+        }
+}        
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 4.2vw; 
@@ -393,9 +405,23 @@
               Google Scholar    <a href="https://scholar.google.com/citations?user=5taYw00AAAAJ" target="_blank" rel="noopener noreferrer" title="Google Scholar Profile">Citations Profile</a>
             </address>
         </div>
-        
         <img src="FoCP.png" alt="FoCP QR code" class="contact-image">
     </div>
+
+<div class="visitor-counter">
+    Page views: <span id="count">...</span>
+</div>
+
+<script>
+    fetch('https://countapi.io')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('count').innerText = data.value;
+        })
+        .catch(() => {
+            document.getElementById('count').innerText = "1"; 
+        });
+</script>
 
 </body>
 </html>
