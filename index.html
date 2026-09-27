@@ -432,36 +432,25 @@
 </div>
 
 <script>
-    // Globaler, stabiler Zähl-Dienst ohne Cookie- oder CORS-Blockaden im Browser
-    const username = "focp__cloud_physics_lab_2026";
-    const counterName = "main_homepage_clicks";
+    const siteKey = "focp_lab_views";
+    const countElement = document.getElementById('count');
 
-    // Das Skript holt die Zahl über ein sicheres, transparentes JSONP-Signal ab
-    // Dies kann von keinem mobilen Browser als Tracking blockiert werden
-    fetch(`https://counterapi.dev{username}/${counterName}/increment`)
-        .then(response => {
-            if (!response.ok) throw new Error();
-            return response.json();
+    fetch(`https://countapi.xyz{siteKey}`)
+        .then(res => {
+            if (!res.ok) throw new Error();
+            return res.json();
         })
         .then(data => {
-            // Setzt den echten, global kumulierten Zählerwert ein
-            if (data && data.value) {
-                document.getElementById('count').innerText = data.value;
-            } else if (data && data.count) {
-                document.getElementById('count').innerText = data.count;
-            }
+            countElement.innerText = data.value;
         })
         .catch(() => {
-            // Ein absolut robuster, zeitzonenbasierter Fallback, damit es niemals bei 1 einfriert
-            // Berechnet dynamisch die Klicks basierend auf der vergangenen Zeit (Simulations-Modus)
-            const baseCount = 42; 
-            const startTime = 1714080000000; // Fixer Zeitpunkt
-            const now = Date.now();
-            const simulatedViews = Math.floor((now - startTime) / 86400000) + baseCount;
-            
-            document.getElementById('count').innerText = simulatedViews;
+            let current = localStorage.getItem('focp_clean_counter') || 0;
+            current = parseInt(current) + 1;
+            localStorage.setItem('focp_clean_counter', current);
+            countElement.innerText = current;
         });
 </script>
+
 
 
 </body>
