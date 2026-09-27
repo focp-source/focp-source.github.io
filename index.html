@@ -29,15 +29,18 @@
         
         h1 { 
             color: #E34234; 
-            font-size: 4.rem;  
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 35px;
-            border-bottom: 1px solid #e5e5e5; 
-            padding-bottom: 18px;
+            font-size: clamp(1.4rem, 3.9vw, 2.6rem); 
+            font-weight: 700; 
+            line-height: 1.2; 
+            margin-top: 60px; 
+            margin-bottom: 35px; 
+        border-bottom: 1px solid #e5e5e5; 
+            padding-bottom: 18px; 
             white-space: nowrap; 
-            text-align: center;
-        }   
+            text-align: center; 
+            width: 100%;
+            box-sizing: border-box;
+        }
 
         h2 {
             color: #E34234;
@@ -79,6 +82,16 @@
             font-style: italic;
         }
 
+        .subtitle-focp {
+            text-align: center;
+            font-size: 1.8rem;       
+            color: #E34234; 
+            font-weight: 650;         
+            margin-top: -25px; 
+            margin-bottom: 40px;
+            padding-left: 12px;       
+        }
+      
         .image-gallery {
             display: flex;
             gap: 24px;
@@ -223,7 +236,9 @@
 </head> 
 <body> 
 
-    <h1>Forstenried Laboratory for Cloud Physics<br>(FoCP)<br></h1> 
+    <h1>Forstenried Laboratory for Cloud Physics</h1>
+    <div class="subtitle-focp">(FoCP)</div>
+
     
     <p>
         First documented in 1166 as a woodland clearing, the Munich district Forstenried grew around the late-Gothic Heiligkreuz church,
