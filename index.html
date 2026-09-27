@@ -209,16 +209,25 @@
             margin: 60px 0 40px 0;
         }
 
-        .visitor-counter {
-            font-size: 0.9rem;
-            color: #888888;
-            margin-top: 30px;
-            font-style: italic;
-            border-top: 1px dashed #e5e5e5;
-            padding-top: 15px;
-            display: block;       
-            text-align: right;  
-        }      
+    .visitor-counter {
+        font-size: 0.9rem;
+        color: #888888;
+        margin-top: 30px;
+        font-style: italic;
+        border-top: 1px dashed #e5e5e5;
+        padding-top: 15px;
+        display: block;      
+        text-align: right;   
+    }
+
+    .visitor-counter #count, 
+    .visitor-counter script + div {
+        display: inline !important;
+        color: #888888 !important;
+        font-family: inherit !important;
+        font-size: 0.9rem !important;
+    }
+
 
         @media (max-width: 768px) {
             h1 {
@@ -426,24 +435,18 @@
     Page views: <span id="count">...</span>
 </div>
 
-<script>
-    const siteKey = "focp-cloud-physics-lab";
+<h2>Contact</h2>
+<p>Hier folgen Ihre Kontaktinformationen...</p>
 
-    fetch(`https://countapi.app{siteKey}`)
-        .then(res => {
-            if (!res.ok) throw new Error();
-            return res.json();
-        })
-        .then(data => {
-            document.getElementById('count').innerText = data.value;
-        })
-        .catch(() => {
-            let localCount = localStorage.getItem('focp_permanent_counter') || 0;
-            localCount = parseInt(localCount) + 1;
-            localStorage.setItem('focp_permanent_counter', localCount);
-            document.getElementById('count').innerText = localCount;
-        });
-</script>
+<div class="visitor-counter">
+    Page views: 
+    <script type="text/javascript" src="https://optistats.ovh"></script>
+    <noscript>
+        <a href="https://www.freecounterstat.com" title="free hit counter"><img src="https://optistats.ovh" border="0" title="free hit counter" alt="free hit counter"></a>
+    </noscript>
+    <span id="count">1</span>
+</div>
+
 
 
 
