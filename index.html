@@ -81,31 +81,32 @@
 
         .image-gallery {
             display: flex;
-            gap: 20px;
+            gap: 24px;
             flex-wrap: wrap;
             margin-top: 20px;
-            margin-bottom: 24px;
+            margin-bottom: 40px;
         }
 
         .image-container {
-            flex: 1;
-            min-width: 250px;  
+            flex: 1 1 calc(33.333% - 16px); 
+            min-width: 260px; /* Ermöglicht einen sauberen Umbruch auf kleineren Bildschirmen */
+            box-sizing: border-box;
         }
 
         .image-container img {
             width: 100%;
             height: auto;
             display: block;
-            border-radius: 4px;  
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);  
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
         }
 
         .image-caption {
             font-size: 0.95rem;
             color: #555555;
-            margin-top: 8px;
+            margin-top: 10px;
             text-align: left;
-            font-style: italic;
+            line-height: 1.4;
         }
         
         .facilitated-studies-box {
@@ -192,7 +193,7 @@
         hr.section-divider {
             border: 0;
             border-top: 1px solid #e5e5e5;
-            margin: 50px 0;  
+            margin: 60px 0 40px 0;
         }
 
         @media (max-width: 768px) {
@@ -310,16 +311,70 @@
 
      <h2>Places</h2>
     
+    ... where science was pondered, nature embraced, journeys shared, and friendships formed
+
     <div class="image-gallery">
+
         <div class="image-container">
-            <img src="Pont-Neuf.jpg" alt="Beschreibung von Bild 1">
-            <div class="image-caption">Pont Neuf in Paris</div>
+            <img src="FoPark.jpg" alt="Forstenrieder Park">
+            <div class="image-caption">Forstenrieder Park</div>
+        </div>
+
+         <div class="image-container">
+            <img src="Urfeld.jpg" alt="Urfeld, Walchensee">
+            <div class="image-caption">Urfeld, Walchensee</div>
+        </div>      
+
+        <div class="image-container">
+            <img src="Dietfurt.jpg" alt="Dietfurt, Altmühl Valley">
+            <div class="image-caption">Dietfurt, Altmühl Valley</div>
         </div>
 
         <div class="image-container">
-            <img src="Lake-in-Wilderness.jpg" alt="Beschreibung von Bild 2">
-            <div class="image-caption">Mountain lake near Boulder, CO</div>
+            <img src="Amrum.jpg" alt="Amrum, North Sea">
+            <div class="image-caption">Amrum, North Sea</div>
+        </div>         
+
+        <div class="image-container">
+            <img src="StPaul.jpg" alt="St. Paul de Fenouillet, Occitanie">
+            <div class="image-caption">St. Paul de Fenouillet, Occitanie</div>
+        </div>         
+
+        <div class="image-container">
+            <img src="Fouday.jpg" alt="Fouday, Alsace">
+            <div class="image-caption">Fouday, Alsace</div>
+        </div>           
+
+        <div class="image-container">
+            <img src="Lozere.jpg" alt="Loz&egrave;re at the base of plateau de Palaiseau">
+            <div class="image-caption">Loz&egrave;re at the base of plateau de Palaiseau</div>
+        </div> 
+
+        <div class="image-container">
+            <img src="Pont-Neuf.jpg" alt="Pont Neuf, Paris">
+            <div class="image-caption">Pont Neuf, Paris</div>
         </div>
+
+        <div class="image-container">
+            <img src="Pantheon.jpg" alt="Pantheon, Rome">
+            <div class="image-caption">Pantheon, Rome</div>
+        </div>      
+        
+        <div class="image-container">
+            <img src="Vienna.jpg" alt="Cafe Sperl, Vienna">
+            <div class="image-caption">Cafe Sperl, Vienna</div>
+        </div>        
+        
+        <div class="image-container">
+            <img src="SandDunes.jpg" alt="Great Sand Dunes, Colorado">
+            <div class="image-caption">Great Sand Dunes, Colorado</div>
+        </div>          
+
+        <div class="image-container">
+            <img src="Wilderness.jpg" alt="Mountain lake near Boulder, Colorado">
+            <div class="image-caption">Mountain lake near Boulder, Colorado</div>
+        </div>
+
     </div>
 
     <hr class="section-divider">
