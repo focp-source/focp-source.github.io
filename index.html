@@ -427,42 +427,34 @@
 
 </div>
 
-     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const counterElement = document.getElementById("visit-count");
-            
-            // 1. Prüfen, ob die Datei lokal auf der Festplatte getestet wird
-            const isLocal = window.location.protocol === 'file:';
-            
-            if (isLocal) {
-                // LOKALER MODUS: Nutzt den persistenten Browserspeicher
-                let currentCount = localStorage.getItem('focp_global_visits') || 0;
-                currentCount = parseInt(currentCount) + 1;
-                localStorage.setItem('focp_global_visits', currentCount);
-                
-                // Formatiert die Zahl (z.B. 1.042) und blendet sie ein
-                counterElement.innerText = currentCount.toLocaleString('de-DE');
-                counterElement.classList.add("visible");
-            } else {
-                // ONLINE MODUS: Zählt über ein stabiles, serverloses Counter-Pixel
-                // Ersetze 'focp-cloud-physics' bei Bedarf durch deine eigene ID
-                const siteId = "focp-cloud-physics"; 
-                const pixelUrl = `https://lyzco.edu.vn{siteId}`;
-                
-                // Wir simulieren den Hit über ein unsichtbares Bildelement im Hintergrund
-                const img = new Image();
-                img.src = pixelUrl;
-                
-                // Da Pixel-Tracker die Gesamtzahl oft im Header/Cookie übertragen,
-                // nutzen wir einen sicheren, unaufdringlichen Standardwert für die Anzeige,
-                // damit das minimalistische Design online sauber initialisiert wird.
-                let onlineCount = localStorage.getItem('focp_online_visits') || 124; // Beispielhafter Startwert
-                onlineCount = parseInt(onlineCount) + 1;
-                localStorage.setItem('focp_online_visits', onlineCount);
-                
-                counterElement.innerText = onlineCount.toLocaleString('de-DE');
+    <script>
+        // Diese Funktion verarbeitet die globale Server-Antwort
+        function handleCounterResponse(response) {
+            if (response && response.value) {
+                const counterElement = document.getElementById("visit-count");
+                // Formatiert die weltweite Zahl (z.B. 1.250)
+                counterElement.innerText = response.value.toLocaleString('de-DE');
                 counterElement.classList.add("visible");
             }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Einzigartiger Schlüssel für das Cloud Physics Labor
+            const namespace = "focp-cloud-physics-lab";
+            const key = "main-homepage";
+            
+            // JSONP-Aufruf umgeht alle Browser- und CORS-Sperren auf Handys und PCs
+            const script = document.createElement('script');
+            script.src = `https://countapi.xyz{namespace}/${key}?callback=handleCounterResponse`;
+            
+            // Falls der externe Server blockiert, nutzen wir einen dezenten Fallback
+            script.onerror = function() {
+                const counterElement = document.getElementById("visit-count");
+                counterElement.innerText = "1";
+                counterElement.classList.add("visible");
+            };
+
+            document.body.appendChild(script);
         });
     </script>
 
