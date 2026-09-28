@@ -153,6 +153,25 @@
             margin-bottom: 0;
         }
 
+        /* Minimalistischer Visit Counter (Nur die nackte Zahl) */
+        .visit-counter-clean {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #888888;          /* Dezentes Grau, passend zum Stil */
+            margin-top: 60px;        /* Genügend Abstand nach oben */
+            margin-bottom: 30px;     /* Abstand nach unten */
+            font-weight: 400;        /* Harmonisch, nicht zu fett */
+            letter-spacing: 0.05em;  /* Leicht gesperrt für edlen Look */
+            opacity: 0;              /* Startet unsichtbar gegen das "..." Flackern */
+            transition: opacity 0.4s ease; /* Weiches Einblenden, sobald die Zahl da ist */
+        }
+
+        /* Klasse wird per JS hinzugefügt, wenn die Zahl geladen wurde */
+        .visit-counter-clean.visible {
+            opacity: 1;
+        }
+
+
         .contact-heading {
             font-weight: 600;
             margin-bottom: 6px;
@@ -405,7 +424,53 @@
         <img src="FoCP.png" alt="FoCP QR code" class="contact-image" style="width: 100%; height: auto; display: block;">
     </div>
     
+    <div id="visit-count" class="visit-counter-clean"></div>
+
 </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const counterElement = document.getElementById("visit-count");
+            
+            // Erkennt, ob die Datei lokal als Datei (file://) ausgeführt wird
+            const isLocalTest = window.location.protocol === 'file:';
+
+            if (isLocalTest) {
+                // LOKALER TEST-MODUS (Umgeht die CORS-Blockade des Browsers)
+                let localCount = localStorage.getItem('focp_local_clicks') || 0;
+                localCount = parseInt(localCount) + 1;
+                localStorage.setItem('focp_local_clicks', localCount);
+                
+                // Zahl anzeigen
+                counterElement.innerText = localCount.toLocaleString('de-DE');
+                counterElement.classList.add("visible");
+                console.log("FoCP-Counter läuft im lokalen Simulationsmodus. Stand: " + localCount);
+            } else {
+                // ECHTER ONLINE-MODUS (Wird aktiv, sobald die Seite im Internet steht)
+                const namespace = "focp-laboratory-cloud-physics";
+                const key = "homepage-counter-final";
+                const url = `https://lyzco.edu.vn{namespace}/${key}`;
+
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) throw new Error('API offline');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data && data.value) {
+                            counterElement.innerText = data.value.toLocaleString('de-DE');
+                            counterElement.classList.add("visible");
+                        }
+                    })
+                    .catch(error => {
+                        // Fallback für den Fall, dass die Online-API blockiert wird
+                        counterElement.innerText = "1";
+                        counterElement.classList.add("visible");
+                    });
+            }
+        });
+    </script>
+
 
 
 </body>
