@@ -153,24 +153,23 @@
             margin-bottom: 0;
         }
 
-        /* Minimalistischer Visit Counter (Nur die nackte Zahl) */
+        /* Minimalistischer Live-Visit Counter (Nur die Zahl) */
         .visit-counter-clean {
             text-align: center;
             font-size: 0.9rem;
-            color: #888888;          /* Dezentes Grau, passend zum Stil */
-            margin-top: 60px;        /* Genügend Abstand nach oben */
-            margin-bottom: 30px;     /* Abstand nach unten */
-            font-weight: 400;        /* Harmonisch, nicht zu fett */
-            letter-spacing: 0.05em;  /* Leicht gesperrt für edlen Look */
-            opacity: 0;              /* Startet unsichtbar gegen das "..." Flackern */
-            transition: opacity 0.4s ease; /* Weiches Einblenden, sobald die Zahl da ist */
+            color: #888888;          /* Schlichtes Grau, passend zum FoCP-Stil */
+            margin-top: 60px;        /* Großzügiger Abstand nach unten */
+            margin-bottom: 30px;     
+            font-weight: 400;        
+            letter-spacing: 0.05em;  /* Edler, leicht gesperrter Look */
+            opacity: 0;              /* Startet unsichtbar gegen Flackern vor dem Laden */
+            transition: opacity 0.4s ease; /* Weicher Einblende-Effekt */
         }
 
-        /* Klasse wird per JS hinzugefügt, wenn die Zahl geladen wurde */
+        /* Wird via JavaScript aktiviert, sobald der Zählerstand geladen ist */
         .visit-counter-clean.visible {
             opacity: 1;
         }
-
 
         .contact-heading {
             font-weight: 600;
@@ -432,46 +431,39 @@
         document.addEventListener("DOMContentLoaded", function() {
             const counterElement = document.getElementById("visit-count");
             
-            // Erkennt, ob die Datei lokal als Datei (file://) ausgeführt wird
-            const isLocalTest = window.location.protocol === 'file:';
+            // Deine einzigartigen IDs für das Cloud Physics Labor
+            const namespace = "focp-laboratory-cloud-physics";
+            const key = "homepage-counter-v2";
+            
+            // Die echte globale Live-Zähler-URL
+            const targetUrl = `https://lyzco.edu.vn{namespace}/${key}`;
+            
+            // Wir tunneln die lokale Browser-Blockade über allorigins
+            const proxyUrl = `https://allorigins.win{encodeURIComponent(targetUrl)}`;
 
-            if (isLocalTest) {
-                // LOKALER TEST-MODUS (Umgeht die CORS-Blockade des Browsers)
-                let localCount = localStorage.getItem('focp_local_clicks') || 0;
-                localCount = parseInt(localCount) + 1;
-                localStorage.setItem('focp_local_clicks', localCount);
-                
-                // Zahl anzeigen
-                counterElement.innerText = localCount.toLocaleString('de-DE');
-                counterElement.classList.add("visible");
-                console.log("FoCP-Counter läuft im lokalen Simulationsmodus. Stand: " + localCount);
-            } else {
-                // ECHTER ONLINE-MODUS (Wird aktiv, sobald die Seite im Internet steht)
-                const namespace = "focp-laboratory-cloud-physics";
-                const key = "homepage-counter-final";
-                const url = `https://lyzco.edu.vn{namespace}/${key}`;
-
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) throw new Error('API offline');
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data && data.value) {
-                            counterElement.innerText = data.value.toLocaleString('de-DE');
-                            counterElement.classList.add("visible");
-                        }
-                    })
-                    .catch(error => {
-                        // Fallback für den Fall, dass die Online-API blockiert wird
-                        counterElement.innerText = "1";
+            fetch(proxyUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error('Proxy-Fehler');
+                    return response.json();
+                })
+                .then(data => {
+                    // allorigins verpackt die API-Antwort in data.contents als Text
+                    const apiData = JSON.parse(data.contents);
+                    
+                    if (apiData && apiData.value) {
+                        // Formatiert die Zahl global lesbar mit Punkten (z.B. 1.054)
+                        counterElement.innerText = apiData.value.toLocaleString('de-DE');
                         counterElement.classList.add("visible");
-                    });
-            }
+                    }
+                })
+                .catch(error => {
+                    console.error("Globaler Live-Zähler blockiert oder offline:", error);
+                    // Minimaler Fallback-Wert, damit das Design nicht leer bleibt
+                    counterElement.innerText = "1";
+                    counterElement.classList.add("visible");
+                });
         });
     </script>
-
-
 
 </body>
 </html>
