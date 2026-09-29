@@ -422,22 +422,20 @@
     <div class="contact-image-container" style="max-width: 150px; width: 100%; margin-left: auto;"> 
         <img src="FoCP.png" alt="FoCP QR code" class="contact-image" style="width: 100%; height: auto; display: block;">
     </div>
-    
-<!--    <div id="visit-count" class="visit-counter-clean"></div> -->
+
+    <div id="visit-count" class="visit-counter-clean"></div>    
 
 </div>
-
-<div>Page Views: <span id="view-count">Loading...</span></div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Ihre exakten Dashboard-Daten
     const workspace = 'FoCP26';
     const counterName = 'FoCP-counter';
-    const counterElement = document.getElementById('view-count');
+    const counterElement = document.getElementById('visit-count');
 
-    // Korrekte v2 REST-API-URL für manuell angelegte Counter
-    const apiUrl = `https://counterapi.dev{workspace}/counters/${counterName}/up`;
+    // Der exakte, offizielle v2 REST-Pfad zum Hochzählen
+    const apiUrl = `https://counterapi.dev{workspace}/${counterName}/up`;
 
     fetch(apiUrl, {
       method: 'GET'
@@ -449,19 +447,21 @@
       return response.json();
     })
     .then(result => {
-      // Die API liefert die Daten in result.data.value zurück
-      if (result && result.data && typeof result.data.value !== 'undefined') {
-        const finalCount = result.data.value;
-        // Formatiert die Zahl lesbar nach deutschen Standards (z.B. 1.250)
-        counterElement.textContent = finalCount.toLocaleString('de-DE');
+      // Die v2 API liefert bei diesem Endpunkt die Antwort flach in result.value zurück
+      if (result && typeof result.value !== 'undefined') {
+        const finalCount = result.value;
+        // Zeigt z. B. "Aufrufe: 1.250" an und formatiert die Tausenderpunkte nach DE-Standard
+        counterElement.textContent = `Aufrufe: ${finalCount.toLocaleString('de-DE')}`;
+        counterElement.classList.add('visible');
       } else {
-        throw new Error('Unerwartete Datenstruktur von der API erhalten.');
+        throw new Error('Unerwartete Datenstruktur');
       }
     })
     .catch(error => {
       console.error('Counter-Fehler:', error);
-      // Fallback-Wert (1), damit die Website nicht fehlerhaft aussieht, falls die API blockiert
-      counterElement.textContent = '1'; 
+      // Fallback-Anzeige, falls der Server nicht erreichbar ist
+      counterElement.textContent = 'Aufrufe: 1';
+      counterElement.classList.add('visible');
     });
   });
 </script>
