@@ -429,25 +429,23 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    // Ihr exakter Workspace-Name und der gewünschte Counter-Schlüssel
     const workspace = "focp-cloud-physics-lab";
     const key = "main-homepage";
     const counterElement = document.getElementById("visit-count");
 
-    // Ruft direkt den offiziellen v2-Endpunkt auf (zählt automatisch +1)
-    fetch(`https://counterapi.dev{workspace}/counters/${key}/up`, {
-        method: 'POST', // v2 nutzt POST für das Hochzählen
-        headers: {
-            'Content-Type': 'application/json'
-        }
+    // Der offizielle v2-Pfad nutzt GET zum Hochzählen (up)
+    fetch(`https://counterapi.dev{workspace}/${key}/up`, {
+        method: 'GET'
     })
     .then(response => {
-        if (!response.ok) throw new Error('API-Antwort nicht OK');
+        if (!response.ok) throw new Error('API-Antwort fehlerhaft (z.B. Workspace nicht gefunden)');
         return response.json();
     })
     .then(result => {
-        // Die v2 API liefert die Struktur: { data: { value: X } }
-        if (result && result.data && typeof result.data.value !== 'undefined') {
-            const countValue = result.data.value;
+        // Die v2 API liefert den Zählerstand direkt unter result.value
+        if (result && typeof result.value !== 'undefined') {
+            const countValue = result.value;
             // Formatiert die Zahl nach deutschen Standards (z.B. 1.250)
             counterElement.innerText = countValue.toLocaleString('de-DE');
             counterElement.classList.add("visible");
@@ -457,13 +455,12 @@ document.addEventListener("DOMContentLoaded", function() {
     })
     .catch(error => {
         console.error('Counter-Fehler:', error);
-        // Fallback-Wert
+        // Fallback, damit der Nutzer eine Zahl sieht, wenn der API-Server blockiert
         counterElement.innerText = "1";
         counterElement.classList.add("visible");
     });
 });
 </script>
-
 
 
 </body>
