@@ -434,8 +434,8 @@
     const counterName = 'FoCP-counter';
     const counterElement = document.getElementById('visit-count');
 
-    // Der exakte, offizielle v2 REST-Pfad zum Hochzählen
-    const apiUrl = `https://counterapi.dev{workspace}/${counterName}/up`;
+    // KORREKTUR: Der exakte, offizielle v2 REST-Pfad zum Hochzählen
+    const apiUrl = `https://counterapi.dev{workspace}/counters/${counterName}/up`;
 
     fetch(apiUrl, {
       method: 'GET'
@@ -447,11 +447,11 @@
       return response.json();
     })
     .then(result => {
-      // Die v2 API liefert bei diesem Endpunkt die Antwort flach in result.value zurück
-      if (result && typeof result.value !== 'undefined') {
-        const finalCount = result.value;
-        // Zeigt z. B. "Aufrufe: 1.250" an und formatiert die Tausenderpunkte nach DE-Standard
-        counterElement.textContent = `Aufrufe: ${finalCount.toLocaleString('de-DE')}`;
+      // Die v2 API liefert bei diesem Endpunkt die Antwort in result.data.value
+      if (result && result.data && typeof result.data.value !== 'undefined') {
+        const finalCount = result.data.value;
+        // Formatiert die Tausenderpunkte nach deutschen Standards (z.B. 1.250)
+        counterElement.textContent = `Counts: ${finalCount.toLocaleString('de-DE')}`;
         counterElement.classList.add('visible');
       } else {
         throw new Error('Unerwartete Datenstruktur');
@@ -459,8 +459,8 @@
     })
     .catch(error => {
       console.error('Counter-Fehler:', error);
-      // Fallback-Anzeige, falls der Server nicht erreichbar ist
-      counterElement.textContent = 'Aufrufe: 1';
+      // Fallback-Anzeige, falls das Netzwerk blockiert
+      counterElement.textContent = 'Counts: 1';
       counterElement.classList.add('visible');
     });
   });
