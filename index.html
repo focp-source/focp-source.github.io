@@ -427,47 +427,43 @@
 
 </div>
 
-<!-- 1. Lädt das offizielle CounterAPI-SDK -->
-<script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
-
-<!-- 2. Globaler Zähler-Aufruf -->
 <script>
-document.addEventListener("DOMContentLoaded", async function() {
+document.addEventListener("DOMContentLoaded", function() {
+    const workspace = "focp-cloud-physics-lab";
+    const key = "main-homepage";
     const counterElement = document.getElementById("visit-count");
 
-    try {
-        // Initialisiert den Client mit Ihrem erfolgreich angelegten Workspace
-        const counter = new Counter({ 
-            workspace: 'focp-cloud-physics-lab' 
-        });
-
-        // Erhöht den Counter 'main-homepage' um 1
-        const result = await counter.up('main-homepage');
-
-        // Die korrekte V3-SDK-Auflösung nutzt direkt 'result.value' oder 'result.data.value'
-        let countValue = null;
-        if (result && typeof result.value !== 'undefined') {
-            countValue = result.value;
-        } else if (result && result.data && typeof result.data.value !== 'undefined') {
-            countValue = result.data.value;
+    // Ruft direkt den offiziellen v2-Endpunkt auf (zählt automatisch +1)
+    fetch(`https://counterapi.dev{workspace}/counters/${key}/up`, {
+        method: 'POST', // v2 nutzt POST für das Hochzählen
+        headers: {
+            'Content-Type': 'application/json'
         }
-
-        if (countValue !== null) {
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('API-Antwort nicht OK');
+        return response.json();
+    })
+    .then(result => {
+        // Die v2 API liefert die Struktur: { data: { value: X } }
+        if (result && result.data && typeof result.data.value !== 'undefined') {
+            const countValue = result.data.value;
             // Formatiert die Zahl nach deutschen Standards (z.B. 1.250)
             counterElement.innerText = countValue.toLocaleString('de-DE');
             counterElement.classList.add("visible");
         } else {
-            throw new Error('Unerwartetes Antwortformat vom Server');
+            throw new Error('Unerwartete Datenstruktur');
         }
-
-    } catch (error) {
+    })
+    .catch(error => {
         console.error('Counter-Fehler:', error);
-        // Fallback, damit die Seite bei Netzwerk-Verzögerungen nicht leer bleibt
+        // Fallback-Wert
         counterElement.innerText = "1";
         counterElement.classList.add("visible");
-    }
+    });
 });
 </script>
+
 
 
 </body>
