@@ -427,34 +427,40 @@
 
 </div>
 
+<!-- 1. Lädt die offizielle, aktuelle Bibliothek von CounterAPI -->
+<script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
+
+<!-- 2. Steuert den globalen Zähler an -->
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Einzigartiger Name und Schlüssel für Ihr Labor
-    const namespace = "focp-cloud-physics-lab";
-    const key = "main-homepage";
+document.addEventListener("DOMContentLoaded", async function() {
     const counterElement = document.getElementById("visit-count");
 
-    // Nutzt die moderne Fetch-API (automatisches Hochzählen bei jedem Aufruf via /hit/)
-    fetch(`https://counterapi.dev{namespace}/${key}/hit`)
-        .then(response => {
-            if (!response.ok) throw new Error('Netzwerk-Fehler');
-            return response.json();
-        })
-        .then(data => {
-            if (data && data.value) {
-                // Formatiert die Zahl nach deutschen Standards (z.B. 1.250)
-                counterElement.innerText = data.value.toLocaleString('de-DE');
-                counterElement.classList.add("visible");
-            }
-        })
-        .catch(error => {
-            console.error('Counter-Fehler:', error);
-            // Eleganter Fallback, falls der Server blockiert wird
-            counterElement.innerText = "1";
-            counterElement.classList.add("visible");
+    try {
+        // Initialisiert den Counter mit Ihrer Workspace-ID
+        // HINWEIS: Ersetzen Sie 'focp-cloud-physics-lab' durch Ihren exakten CounterAPI.dev-Workspacennamen
+        const counter = new Counter({ 
+            workspace: 'focp-cloud-physics-lab' 
         });
+
+        // Erhöht den Zähler für die Homepage um +1 und ruft die Daten ab
+        const response = await counter.up('main-homepage');
+
+        // Das neue Datenformat liefert die Zahl über 'data.up_count'
+        if (response && response.data && typeof response.data.up_count !== 'undefined') {
+            counterElement.innerText = response.data.up_count.toLocaleString('de-DE');
+            counterElement.classList.add("visible");
+        } else {
+            throw new Error('Ungültiges Antwortformat');
+        }
+    } catch (error) {
+        console.error('Counter-Fehler:', error);
+        // Sicherer Fallback bei Netzwerkfehlern oder fehlendem Workspace
+        counterElement.innerText = "1";
+        counterElement.classList.add("visible");
+    }
 });
 </script>
+
 
 
 </body>
