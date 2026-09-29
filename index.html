@@ -423,43 +423,44 @@
         <img src="FoCP.png" alt="FoCP QR code" class="contact-image" style="width: 100%; height: auto; display: block;">
     </div>
     
-    <div id="visit-count" class="visit-counter-clean"></div>
+<!--    <div id="visit-count" class="visit-counter-clean"></div> -->
 
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Ihr exakter Workspace-Name und der gewünschte Counter-Schlüssel
-    const workspace = "focp-cloud-physics-lab";
-    const key = "main-homepage";
-    const counterElement = document.getElementById("visit-count");
+<div>Page Views: <span id="view-count">Loading...</span></div>
 
-    // Der offizielle v2-Pfad nutzt GET zum Hochzählen (up)
-    fetch(`https://counterapi.dev{workspace}/${key}/up`, {
-        method: 'GET'
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Ihre konfigurierten Daten aus dem Dashboard
+    const workspace = 'FoCP26';
+    const counterName = 'FoCP-counter';
+    const counterElement = document.getElementById('view-count');
+
+    // Direkter nativer HTTPS-Aufruf an die offizielle v2 REST-API (zählt automatisch +1)
+    fetch(`https://counterapi.dev{workspace}/counters/${counterName}/up`, {
+      method: 'GET'
     })
     .then(response => {
-        if (!response.ok) throw new Error('API-Antwort fehlerhaft (z.B. Workspace nicht gefunden)');
-        return response.json();
+      if (!response.ok) {
+        throw new Error('API-Antwort fehlerhaft. Bitte prüfen Sie den Workspace- und Counter-Namen.');
+      }
+      return response.json();
     })
     .then(result => {
-        // Die v2 API liefert den Zählerstand direkt unter result.value
-        if (result && typeof result.value !== 'undefined') {
-            const countValue = result.value;
-            // Formatiert die Zahl nach deutschen Standards (z.B. 1.250)
-            counterElement.innerText = countValue.toLocaleString('de-DE');
-            counterElement.classList.add("visible");
-        } else {
-            throw new Error('Unerwartete Datenstruktur');
-        }
+      // Die direkte REST-API liefert die Daten sauber verpackt in: result.data.value
+      if (result && result.data && typeof result.data.value !== 'undefined') {
+        const finalCount = result.data.value;
+        // Formatiert die Zahl lesbar nach deutschen Standards (z.B. 1.250)
+        counterElement.textContent = finalCount.toLocaleString('de-DE');
+      } else {
+        throw new Error('Unerwartete Datenstruktur von der API erhalten.');
+      }
     })
     .catch(error => {
-        console.error('Counter-Fehler:', error);
-        // Fallback, damit der Nutzer eine Zahl sieht, wenn der API-Server blockiert
-        counterElement.innerText = "1";
-        counterElement.classList.add("visible");
+      console.error('Counter-Fehler:', error);
+      counterElement.textContent = 'Error loading count';
     });
-});
+  });
 </script>
 
 
