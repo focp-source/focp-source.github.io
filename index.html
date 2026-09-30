@@ -425,43 +425,38 @@
 
     <div id="visit-count" class="visit-counter-clean"></div>    
 
-</div>
-
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Eindeutige IDs für Ihr Labor
-    const namespace = 'focp-cloud-physics-lab-2026';
+document.addEventListener('DOMContentLoaded', function() {
+    const namespace = 'focp-cloud-physics-lab';
     const key = 'main-homepage';
     const counterElement = document.getElementById('visit-count');
+    const apiUrl = `https://mileshilliard.com{namespace}/${key}`;
 
-    // Wir nutzen eine offene, hochverfügbare REST-API, die ohne Token-Zwang auskommt
-    const apiUrl = `https://countapi.cc{namespace}/${key}`;
+    fetch(apiUrl, { mode: 'cors' })
+        .then(response => {
+            if (!response.ok) throw new Error();
+            return response.json();
+        })
+        .then(result => {
+            if (result && typeof result.value !== 'undefined') {
+                counterElement.textContent = `Views ${result.value.toLocaleString('de-DE')}`;
+                counterElement.classList.add('visible');
+            } else {
+                throw new Error();
+            }
+        })
+        .catch(() => {
+            let localCount = localStorage.getItem('lab_fallback_counter') || 1; 
+            localCount = parseInt(localCount) + 1;
+            localStorage.setItem('lab_fallback_counter', localCount);
 
-    fetch(apiUrl)
-      .then(response => {
-        if (!response.ok) throw new Error('API antwortet nicht');
-        return response.json();
-      })
-      .then(result => {
-        // Liest den hochgezählten Wert aus (Struktur: { value: X })
-        if (result && typeof result.value !== 'undefined') {
-          const finalCount = result.value;
-          // Formatiert die Zahl nach deutschen Tausenderpunkten (z.B. 1.250)
-          counterElement.textContent = `Counts: ${finalCount.toLocaleString('de-DE')}`;
-          counterElement.classList.add('visible');
-        } else {
-          throw new Error('Ungültige Datenstruktur');
-        }
-      })
-      .catch(error => {
-        console.error('Counter-Fehler:', error);
-        // Fallback: Sollte das Netzwerk komplett blockiert sein, wird eine "1" gezeigt
-        counterElement.textContent = 'Counts: 1';
-        counterElement.classList.add('visible');
-      });
-  });
+            counterElement.textContent = `Views ${localCount.toLocaleString('de-DE')}`;
+            counterElement.classList.add('visible');
+        });
+});
 </script>
 
+</div>
 
 </body>
 </html>
