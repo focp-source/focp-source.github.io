@@ -212,19 +212,19 @@
         }
 
         .visit-counter-clean {
-            text-align: center;
+            text-align: right;
             font-size: 0.9rem;
             color: #888888;           
-            margin-top: 60px;         
-            margin-bottom: 30px;     
+            margin-top: 10px;         
+            margin-bottom: 10px;     
             font-weight: 400;        
-            letter-spacing: 0.05em;   
+            letter-spacing: 0.02em; 
             opacity: 0;               
-            transition: opacity 0.3s ease;  
+            transition: opacity 0.3s ease;                    
         }
 
         .visit-counter-clean.visible {
-            opacity: 1;
+            opacity: 1; 
         }
 
     </style>  
@@ -414,15 +414,18 @@
             <a href="mailto:focp26@icloud.com">focp26@icloud.com</a><br>
             <a href="https://orcid.org/0000-0003-0278-4980" target="_blank" rel="noopener noreferrer">ORCHID</a><br>
             <a href="https://webofscience.com" target="_blank" rel="noopener noreferrer" title="Web of Science Profile">ResearcherID</a><br>
-            <a href="https://scholar.google.com/citations?user=5taYw00AAAAJ" target="_blank" rel="noopener noreferrer" title="Google Scholar Profile"> Google Scholar 
+            <a href="https://scholar.google.com/citations?user=5taYw00AAAAJ" target="_blank" rel="noopener noreferrer" title="Google Scholar Profile"> Google Scholar</a>  
         </address>
     </div>
 
     <div class="contact-image-container" style="max-width: 150px; width: 100%; margin-left: auto;"> 
         <img src="FoCP.png" alt="FoCP QR code" class="contact-image" style="width: 100%; height: auto; display: block;">
+        <div id="visit-count" class="visit-counter-clean"></div>  
     </div>
 
-    <div id="visit-count" class="visit-counter-clean"></div>    
+     
+
+</div>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -430,6 +433,7 @@
         const key = 'main-homepage';
         const counterElement = document.getElementById('visit-count');
         const apiUrl = `https://mileshilliard.com{namespace}/${key}`;
+        const views = ' '; 
 
         fetch(apiUrl, { mode: 'cors' })
            .then(response => {
@@ -438,7 +442,7 @@
             })
            .then(result => {
                 if (result && typeof result.value !== 'undefined') {
-                    counterElement.textContent = `Views ${result.value.toLocaleString('de-DE')}`;
+                    counterElement.textContent = `${views} ${result.value.toLocaleString('de-DE')}`;
                     counterElement.classList.add('visible');
                 } else {
                    throw new Error();
@@ -449,12 +453,11 @@
                 localCount = parseInt(localCount) + 1;
                 localStorage.setItem('lab_fallback_counter', localCount);
 
-                counterElement.textContent = `Views ${localCount.toLocaleString('de-DE')}`;
+                counterElement.textContent = `${views} ${localCount.toLocaleString('de-DE')}`;
                 counterElement.classList.add('visible');
             });
     });
     </script>
 
-</div>
 </body>
 </html>
