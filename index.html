@@ -211,20 +211,18 @@
             margin: 60px 0 40px 0;
         }
 
-        /* Minimalistischer Visit Counter (Nur die nackte Zahl) */
         .visit-counter-clean {
             text-align: center;
             font-size: 0.9rem;
-            color: #888888;          /* Edles, unaufdringliches Grau */
-            margin-top: 60px;        /* Großzügiger Abstand nach unten */
+            color: #888888;           
+            margin-top: 60px;         
             margin-bottom: 30px;     
             font-weight: 400;        
-            letter-spacing: 0.05em;  /* Leicht gesperrter Text für edlen Labor-Look */
-            opacity: 0;              /* Verhindert kurzes Aufblitzen von Inhalten vor dem Laden */
-            transition: opacity 0.3s ease; /* Weicher Einblende-Effekt */
+            letter-spacing: 0.05em;   
+            opacity: 0;               
+            transition: opacity 0.3s ease;  
         }
 
-        /* Wird via JavaScript aktiviert, sobald der Wert berechnet ist */
         .visit-counter-clean.visible {
             opacity: 1;
         }
@@ -236,7 +234,6 @@
     <h1>Forstenried Laboratory for Cloud Physics</h1>
     <div class="subtitle-focp">(FoCP)</div>
 
-    
     <p>
         First documented in 1166 as a woodland clearing, Forstenried grew around the late-Gothic Heiligkreuz church,
         anchoring the settlement within Bavaria's monastic network. In this region, monastic estates and forestries collaborated on agricultural 
@@ -282,7 +279,7 @@
 
         Essay: <a href="https://communities.springernature.com/posts/does-aircraft-soot-matter-for-the-climate-impact-of-aviation" target="_blank" rel="noopener noreferrer">Does Aircraft Soot Matter for the Climate Impact of Aviation? </a> 
 
-        <h3>Atmospheric effects of aviation (September 2026)</h3>
+        <h3>Aviation and climate (September 2026)</h3>
     <p> 
         Catalyzing the new field of Earth System science, Johan Rockström 
         <a href="https://doi.org/10.1038/461472a" target="_blank" rel="noopener noreferrer"> presented</a> in 2009 clear evidence underscoring the urgency 
@@ -385,7 +382,7 @@
         </div> 
 
         <div class="image-container">
-            <img src="SanJuan.jpg" alt="San Juan Island, Washington">
+            <img src="SanJuan.jpg" alt="San Juan Island, Washington State">
             <div class="image-caption">San Juan Island, Washington State</div>
         </div>             
         
@@ -425,38 +422,37 @@
 
     <div id="visit-count" class="visit-counter-clean"></div>    
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const namespace = 'focp-cloud-physics-lab';
-    const key = 'main-homepage';
-    const counterElement = document.getElementById('visit-count');
-    const apiUrl = `https://mileshilliard.com{namespace}/${key}`;
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const namespace = 'focp-cloud-physics-lab';
+        const key = 'main-homepage';
+        const counterElement = document.getElementById('visit-count');
+        const apiUrl = `https://mileshilliard.com{namespace}/${key}`;
 
-    fetch(apiUrl, { mode: 'cors' })
-        .then(response => {
-            if (!response.ok) throw new Error();
-            return response.json();
-        })
-        .then(result => {
-            if (result && typeof result.value !== 'undefined') {
-                counterElement.textContent = `Views ${result.value.toLocaleString('de-DE')}`;
+        fetch(apiUrl, { mode: 'cors' })
+           .then(response => {
+                if (!response.ok) throw new Error();
+                return response.json();
+            })
+           .then(result => {
+                if (result && typeof result.value !== 'undefined') {
+                    counterElement.textContent = `Views ${result.value.toLocaleString('de-DE')}`;
+                    counterElement.classList.add('visible');
+                } else {
+                   throw new Error();
+                }
+            })
+            .catch(() => {
+                let localCount = localStorage.getItem('lab_fallback_counter') || 1; 
+                localCount = parseInt(localCount) + 1;
+                localStorage.setItem('lab_fallback_counter', localCount);
+
+                counterElement.textContent = `Views ${localCount.toLocaleString('de-DE')}`;
                 counterElement.classList.add('visible');
-            } else {
-                throw new Error();
-            }
-        })
-        .catch(() => {
-            let localCount = localStorage.getItem('lab_fallback_counter') || 1; 
-            localCount = parseInt(localCount) + 1;
-            localStorage.setItem('lab_fallback_counter', localCount);
-
-            counterElement.textContent = `Views ${localCount.toLocaleString('de-DE')}`;
-            counterElement.classList.add('visible');
-        });
-});
-</script>
+            });
+    });
+    </script>
 
 </div>
-
 </body>
 </html>
