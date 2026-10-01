@@ -239,7 +239,7 @@
         (Baroque remodeling in 1672), anchoring the settlement within the region's monastic network, where monastic estates and 
         forestries collaborated on agricultural and weather tracking. Forstenried is tangentially related to monastic weather research 
         through the assignment of Polling Abbey canon and astronomer Prosper Goldhofer to the local parish in 1765. Today, the Munich 
-        district Forstenried lies midway between two centers for weather and cloud research: the Institute of Atmospheric Physics at 
+        district Forstenried lies between two centers for weather and cloud research: the Institute of Atmospheric Physics at 
         DLR Oberpfaffenhofen and the Meteorological Institute at LMU Munich close to the city center.
     </p>
 
@@ -280,7 +280,7 @@
 
         <h3>Impact of aviation on global climate change (September 2026)</h3>
 
-        Viewpoint: <a href="opinion-0926.html">Opinion 0926.html</a> 
+        Viewpoint: <a href="opinion-0926.html">Opinion 09/26</a> 
 
      <h2>Places</h2>
     
@@ -340,7 +340,7 @@
         
         <div class="image-container">
             <img src="SandDunes.jpg" alt="Great Sand Dunes, Colorado">
-            <div class="image-caption">Great Sand Dunes, Sangre de Cristo Range, Colorado</div>
+            <div class="image-caption">Great Sand Dunes, Colorado</div>
         </div>          
 
         <div class="image-container">
@@ -377,14 +377,12 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Feste, globale IDs: Nutzen Sie exakt diese beiden Zeilen unverändert auf ALLEN Seiten!
     const namespace = 'global-focp-cloud-physics-lab-2026';
-    const key = 'shared-global-counter'; // Ein einheitlicher Schlüssel für alle Webseiten
+    const key = 'shared-global-counter';  
     
     const counterElement = document.getElementById('visit-count');
     const views = ' '; 
 
-    // Korrigierte, voll funktionsfähige API-Route (Kombination aus Namespace und globalem Key)
     const apiUrl = `https://lyra.ooo{namespace}/${key}`;
 
     fetch(apiUrl, { mode: 'cors' })
@@ -394,7 +392,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
        .then(result => {
             if (result && typeof result.value !== 'undefined') {
-                // Zeigt den globalen, serverweiten Zählerstand an
                 counterElement.textContent = `${views}${result.value.toLocaleString('de-DE')}`;
                 counterElement.classList.add('visible');
             } else {
@@ -402,7 +399,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(() => {
-            // AdBlocker-Sicherheit: Falls blockiert, zählt es zumindest lokal auf diesem Gerät hoch
             let localCount = localStorage.getItem('lab_global_fallback_counter') || 1; 
             localCount = parseInt(localCount) + 1;
             localStorage.setItem('lab_global_fallback_counter', localCount);
