@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(() => {
             // AdBlocker-Sicherheit: Falls blockiert, zählt es zumindest lokal auf diesem Gerät hoch
-            let localCount = localStorage.getItem('lab_global_fallback_counter') || 1248; 
+            let localCount = localStorage.getItem('lab_global_fallback_counter') || 1; 
             localCount = parseInt(localCount) + 1;
             localStorage.setItem('lab_global_fallback_counter', localCount);
 
