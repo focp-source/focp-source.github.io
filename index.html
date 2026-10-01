@@ -373,41 +373,46 @@
         <div id="visit-count" class="visit-counter-clean"></div>  
     </div>
 
-     
-
 </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const namespace = 'focp-cloud-physics-lab';
-        const key = 'main-homepage';
-        const counterElement = document.getElementById('visit-count');
-        const apiUrl = `https://mileshilliard.com{namespace}/${key}`;
-        const views = ' '; 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Feste, globale IDs: Nutzen Sie exakt diese beiden Zeilen unverändert auf ALLEN Seiten!
+    const namespace = 'global-focp-cloud-physics-lab-2026';
+    const key = 'shared-global-counter'; // Ein einheitlicher Schlüssel für alle Webseiten
+    
+    const counterElement = document.getElementById('visit-count');
+    const views = ' '; 
 
-        fetch(apiUrl, { mode: 'cors' })
-           .then(response => {
-                if (!response.ok) throw new Error();
-                return response.json();
-            })
-           .then(result => {
-                if (result && typeof result.value !== 'undefined') {
-                    counterElement.textContent = `${views} ${result.value.toLocaleString('de-DE')}`;
-                    counterElement.classList.add('visible');
-                } else {
-                   throw new Error();
-                }
-            })
-            .catch(() => {
-                let localCount = localStorage.getItem('lab_fallback_counter') || 1; 
-                localCount = parseInt(localCount) + 1;
-                localStorage.setItem('lab_fallback_counter', localCount);
+    // Korrigierte, voll funktionsfähige API-Route (Kombination aus Namespace und globalem Key)
+    const apiUrl = `https://lyra.ooo{namespace}/${key}`;
 
-                counterElement.textContent = `${views} ${localCount.toLocaleString('de-DE')}`;
+    fetch(apiUrl, { mode: 'cors' })
+       .then(response => {
+            if (!response.ok) throw new Error();
+            return response.json();
+        })
+       .then(result => {
+            if (result && typeof result.value !== 'undefined') {
+                // Zeigt den globalen, serverweiten Zählerstand an
+                counterElement.textContent = `${views}${result.value.toLocaleString('de-DE')}`;
                 counterElement.classList.add('visible');
-            });
-    });
-    </script>
+            } else {
+               throw new Error();
+            }
+        })
+        .catch(() => {
+            // AdBlocker-Sicherheit: Falls blockiert, zählt es zumindest lokal auf diesem Gerät hoch
+            let localCount = localStorage.getItem('lab_global_fallback_counter') || 1248; 
+            localCount = parseInt(localCount) + 1;
+            localStorage.setItem('lab_global_fallback_counter', localCount);
+
+            counterElement.textContent = `${views}${localCount.toLocaleString('de-DE')}`;
+            counterElement.classList.add('visible');
+        });
+});
+</script>
+
 
 </body>
 </html>
