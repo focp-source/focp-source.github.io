@@ -388,27 +388,18 @@
 <script type="module">
     import { Counter } from 'https://cdn.jsdelivr.net/npm/counterapi/dist/counter.esm.min.js';
     
-    // Verpacken in eine selbstaufrufende asynchrone Funktion
-    (async () => {
-        const counterElement = document.getElementById('view-counter');
-        if (!counterElement) return;
-
-        try {
-            const counter = new Counter({ workspace: 'FoCP26', debug: true });
-            
-            // API-Aufruf
-            const response = await counter.up('views');
+    const counterElement = document.getElementById('view-counter');
+    const counter = new Counter({ workspace: 'FoCP26', debug: true });
+    
+    counter.up('views')
+        .then(response => {
             console.log('CounterAPI response:', response);
-            
-            // CounterAPI v3 nutzt response.data.up_count, v2 nutzt response.value
-            // Diese Zeile deckt sicherheitshalber beide Varianten ab:
             counterElement.textContent = response.data?.up_count || response.value || '0';
-            
-        } catch (error) {
+        })
+        .catch(error => {
             console.error('CounterAPI error:', error);
             counterElement.textContent = 'Zähler nicht verfügbar';
-        }
-    })();
+        });
 </script>
 
 
