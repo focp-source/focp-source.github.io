@@ -385,21 +385,31 @@
     <p>This page has been viewed <span id="view-counter">Loading…</span> times</p>
 </div>
 
-<script type="module">
-    import { Counter } from 'https://cdn.jsdelivr.net/npm/counterapi/dist/counter.esm.min.js';
-    
+<!-- Hier laden wir die normale Browser-Version statt des ESM-Moduls -->
+<script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
+
+<script>
+    // Das Script wird nun ohne "type=module" und ohne "import" ausgeführt
     const counterElement = document.getElementById('view-counter');
-    const counter = new Counter({ workspace: 'FoCP26', debug: true });
     
-    counter.up('views')
-        .then(response => {
-            console.log('CounterAPI response:', response);
-            counterElement.textContent = response.data?.up_count || response.value || '0';
-        })
-        .catch(error => {
-            console.error('CounterAPI error:', error);
-            counterElement.textContent = 'Zähler nicht verfügbar';
-        });
+    try {
+        // Counter initialisieren (Das 'Counter'-Objekt ist nun global verfügbar)
+        const counter = new Counter({ workspace: 'FoCP26', debug: true });
+        
+        counter.up('views')
+            .then(response => {
+                console.log('CounterAPI response:', response);
+                // Kompatibel mit CounterAPI v3 (.data.up_count) und v2 (.value)
+                counterElement.textContent = response.data?.up_count || response.value || '0';
+            })
+            .catch(error => {
+                console.error('CounterAPI error:', error);
+                counterElement.textContent = 'Zähler nicht verfügbar';
+            });
+    } catch (e) {
+        console.error('Initialisierungsfehler:', e);
+        counterElement.textContent = 'Zähler nicht verfügbar';
+    }
 </script>
 
 
