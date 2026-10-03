@@ -231,12 +231,7 @@
             text-align: right;
             font-size: 0.9rem;
             color: #888888; 
-        }
-
-        .counter-badge {
-            vertical-align: middle;
-            border-radius: 4px;
-        }     
+        }  
 
     </style>  
 </head> 
@@ -388,11 +383,11 @@
 
 <!-- 1. Das HTML-Element für die Anzeige -->
 <div class="stats-container"> 
-    <p>This page has been viewed <span id="view-counter">...</span> times</p> 
+    <p>This page has been viewed <span id="view-counter">Lade...</span> times</p> 
 </div>
 
-<!-- 2. Einbinden der CounterAPI-Bibliothek -->
-<script src="https://jsdelivr.net"></script>
+<!-- 2. Einbinden der korrekten CounterAPI-Bibliothek via jsDelivr CDN -->
+<script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
 
 <!-- 3. Die Logik zum Hochzählen -->
 <script>
@@ -400,30 +395,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const counterElement = document.getElementById('view-counter');
 
     try {
-        // Verbindung zu deinem Workspace
+        // Verbindung zu deinem Workspace (Stelle sicher, dass 'FoCP26' bei app.counterapi.dev registriert ist)
         const counter = new Counter({ 
             workspace: 'FoCP26'
         }); 
 
-        // Zähler hochzählen und Wert reinschreiben
+        // Zähler für diese spezifische Seite hochzählen
+        // Tipp: 'views' zählt global. Wenn du pro Seite zählen willst, nutze z.B. window.location.pathname
         counter.up('views')
             .then(result => {
-                // Liest die aktuelle API-Datenstruktur aus
-                if (result && result.data && result.data.up_count !== undefined) {
+                // CounterAPI liefert je nach Version das Ergebnis direkt in .value oder in .data.up_count
+                if (result && result.value !== undefined) {
+                    counterElement.textContent = result.value;
+                } else if (result && result.data && result.data.up_count !== undefined) {
                     counterElement.textContent = result.data.up_count;
                 } else {
-                    counterElement.textContent = result.value || '0';
+                    counterElement.textContent = '0';
                 }
             })
             .catch(error => {
                 console.error('API Fehler:', error);
-                counterElement.textContent = 'Fehler beim Laden';
+                counterElement.textContent = 'Fehler';
             });
     } catch (e) {
         console.error('Initialisierungsfehler:', e);
+        counterElement.textContent = 'Fehler';
     }
 });
 </script>
+
 
 </body>
 </html>
