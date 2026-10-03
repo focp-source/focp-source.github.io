@@ -386,43 +386,48 @@
     <p>This page has been viewed <span id="view-counter">Lade...</span> times</p> 
 </div>
 
-<!-- 2. Einbinden der korrekten CounterAPI-Bibliothek via jsDelivr CDN -->
+<!-- 2. Einbinden der CounterAPI-Bibliothek via jsDelivr CDN -->
 <script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
 
-<!-- 3. Die Logik zum Hochzählen -->
+<!-- 3. Die korrigierte Logik zum Hochzählen -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const counterElement = document.getElementById('view-counter');
 
     try {
-        // Verbindung zu deinem Workspace (Stelle sicher, dass 'FoCP26' bei app.counterapi.dev registriert ist)
+        // Verbindung zu deinem Workspace
         const counter = new Counter({ 
             workspace: 'FoCP26'
         }); 
 
-        // Zähler für diese spezifische Seite hochzählen
-        // Tipp: 'views' zählt global. Wenn du pro Seite zählen willst, nutze z.B. window.location.pathname
-        counter.up('views')
-            .then(result => {
-                // CounterAPI liefert je nach Version das Ergebnis direkt in .value oder in .data.up_count
-                if (result && result.value !== undefined) {
-                    counterElement.textContent = result.value;
-                } else if (result && result.data && result.data.up_count !== undefined) {
-                    counterElement.textContent = result.data.up_count;
-                } else {
-                    counterElement.textContent = '0';
-                }
-            })
-            .catch(error => {
-                console.error('API error:', error);
+        // Definition der asynchronen Funktion
+        async function trackView() {
+            try {
+                // Den Zähler erhöhen
+                const response = await counter.up('views');
+                
+                // WICHTIG: Der Wert liegt ab v3 unter .data.up_count
+                const currentViews = response.data.up_count;
+                
+                // HTML-Element mit der echten Zahl aktualisieren
+                counterElement.textContent = currentViews;
+                console.log(`Aktuelle Aufrufe: ${currentViews}`);
+            } catch (error) {
+                console.error('Fehler beim Hochzählen:', error);
                 counterElement.textContent = 'API Error';
-            });
-    } catch (e) {
-        console.error('Initialization error:', e);
-        counterElement.textContent = 'Initialization Error';
+            }
+        }
+
+        // FUNKTIONSAUFRUF: Die Funktion muss auch ausgeführt werden!
+        trackView();
+
+    } catch (initError) {
+        console.error('Fehler bei der Initialisierung:', initError);
+        counterElement.textContent = 'Init Error';
     }
-});
+});  
 </script>
+
 
 
 </body>
