@@ -381,53 +381,28 @@
 
 </div>
 
-<!-- 1. Das HTML-Element für die Anzeige -->
 <div class="stats-container"> 
     <p>This page has been viewed <span id="view-counter">Lade...</span> times</p> 
 </div>
 
-<!-- 2. Einbinden der CounterAPI-Bibliothek via jsDelivr CDN -->
-<script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
+<script type="module">
+    // Direktes Laden als ES-Modul via CDN
+    import { Counter } from 'https://cdn.jsdelivr.net/npm/counterapi/dist/counter.esm.min.js';
 
-<!-- 3. Die korrigierte Logik zum Hochzählen -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const counterElement = document.getElementById('view-counter');
-
-    try {
-        // Verbindung zu deinem Workspace
-        const counter = new Counter({ 
-            workspace: 'FoCP26'
-        }); 
-
-        // Definition der asynchronen Funktion
-        async function trackView() {
-            try {
-                // Den Zähler erhöhen
-                const response = await counter.up('views');
-                
-                // WICHTIG: Der Wert liegt ab v3 unter .data.up_count
-                const currentViews = response.data.up_count;
-                
-                // HTML-Element mit der echten Zahl aktualisieren
-                counterElement.textContent = currentViews;
-                console.log(`Aktuelle Aufrufe: ${currentViews}`);
-            } catch (error) {
-                console.error('Fehler beim Hochzählen:', error);
-                counterElement.textContent = 'API Error';
-            }
+    document.addEventListener('DOMContentLoaded', async function() {
+        const counterElement = document.getElementById('view-counter');
+        
+        try {
+            const counter = new Counter({ workspace: 'FoCP26' }); 
+            const response = await counter.up('views');
+            
+            counterElement.textContent = response.data.up_count;
+        } catch (error) {
+            console.error('Fehler:', error);
+            counterElement.textContent = 'API Error';
         }
-
-        // FUNKTIONSAUFRUF: Die Funktion muss auch ausgeführt werden!
-        trackView();
-
-    } catch (initError) {
-        console.error('Fehler bei der Initialisierung:', initError);
-        counterElement.textContent = 'Init Error';
-    }
-});  
+    });
 </script>
-
 
 
 </body>
