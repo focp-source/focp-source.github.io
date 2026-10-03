@@ -385,31 +385,57 @@
     <p>This page has been viewed <span id="view-counter">Loading…</span> times</p>
 </div>
 
-<!-- Hier laden wir die normale Browser-Version statt des ESM-Moduls -->
+<!-- Offizielle stabile Browser-Version -->
 <script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
 
 <script>
-    // Das Script wird nun ohne "type=module" und ohne "import" ausgeführt
-    const counterElement = document.getElementById('view-counter');
-    
-    try {
-        // Counter initialisieren (Das 'Counter'-Objekt ist nun global verfügbar)
-        const counter = new Counter({ workspace: 'FoCP26', debug: true });
+    window.addEventListener('DOMContentLoaded', () => {
+        const counterElement = document.getElementById('view-counter');
         
-        counter.up('views')
-            .then(response => {
-                console.log('CounterAPI response:', response);
-                // Kompatibel mit CounterAPI v3 (.data.up_count) und v2 (.value)
-                counterElement.textContent = response.data?.up_count || response.value || '0';
-            })
-            .catch(error => {
-                console.error('CounterAPI error:', error);
-                counterElement.textContent = 'Zähler nicht verfügbar';
+        try {
+            // Erkennt flexibel, wie das CDN die Klasse bereitstellt
+            const TargetCounter = typeof Counter !== 'undefined' ? Counter : (typeof CounterAPI !== 'undefined' ? CounterAPI.Counter : null);
+            
+            if (!TargetCounter) {
+                counterElement.textContent = "Bibliothek fehlt";
+                return;
+            }
+
+            // Initialisierung Ihres Workspaces
+            const counter = new TargetCounter({ 
+                workspace: 'FoCP26',
+                debug: true
             });
-    } catch (e) {
-        console.error('Initialisierungsfehler:', e);
-        counterElement.textContent = 'Zähler nicht verfügbar';
-    }
+            
+            // Aufruf des Counters
+            counter.up('views')
+                .then(response => {
+                    console.log('API Erfolg:', response);
+                    
+                    // Strukturprüfung gem. v3-Spezifikation (data.up_count)
+                    if (response && response.data && typeof response.data.up_count !== 'undefined') {
+                        counterElement.textContent = response.data.up_count;
+                    } else if (response && typeof response.value !== 'undefined') {
+                        counterElement.textContent = response.value;
+                    } else {
+                        counterElement.textContent = '0';
+                    }
+                })
+                .catch(error => {
+                    console.error('API-Fehler:', error);
+                    
+                    // Gibt den echten HTTP-Status aus (z.B. 404, 403, 400)
+                    const statusText = error.status ? ` (Status ${error.status})` : '';
+                    const msgText = error.message ? `: ${error.message}` : ' API lehnt ab';
+                    
+                    counterElement.textContent = "Fehler" + statusText + msgText;
+                });
+                
+        } catch (e) {
+            console.error('Initialisierungsfehler:', e);
+            counterElement.textContent = 'Skript-Fehler';
+        }
+    });
 </script>
 
 
