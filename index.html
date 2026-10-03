@@ -414,12 +414,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                console.error('API Fehler:', error);
-                counterElement.textContent = 'Fehler';
+                console.error('API error:', error);
+                counterElement.textContent = 'API Error';
             });
     } catch (e) {
-        console.error('Initialisierungsfehler:', e);
-        counterElement.textContent = 'Fehler';
+        console.error('Initialization error:', e);
+        counterElement.textContent = 'Initialization Error';
     }
 });
 </script>
