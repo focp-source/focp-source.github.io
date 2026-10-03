@@ -406,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }); 
 
         // Zähler hochzählen und Wert reinschreiben
-        counter.up('page-views')
+        counter.up('views')
             .then(result => {
                 // Liest die aktuelle API-Datenstruktur aus
                 if (result && result.data && result.data.up_count !== undefined) {
