@@ -381,27 +381,34 @@
 
 </div>
 
-<div class="stats-container"> 
-    <p>This page has been viewed <span id="view-counter">Lade...</span> times</p> 
+<div class="stats-container">
+  <p>This page has been viewed <span id="view-counter">Loading…</span> times</p>
 </div>
 
 <script type="module">
-    // Direktes Laden als ES-Modul via CDN
-    import { Counter } from 'https://cdn.jsdelivr.net/npm/counterapi/dist/counter.esm.min.js';
+  import { Counter } from 'https://cdn.jsdelivr.net/npm/counterapi/dist/counter.esm.min.js';
 
-    document.addEventListener('DOMContentLoaded', async function() {
-        const counterElement = document.getElementById('view-counter');
-        
-        try {
-            const counter = new Counter({ workspace: 'FoCP26' }); 
-            const response = await counter.up('views');
-            
-            counterElement.textContent = response.data.up_count;
-        } catch (error) {
-            console.error('Fehler:', error);
-            counterElement.textContent = 'API Error';
-        }
+  const counterElement = document.getElementById('view-counter');
+
+  try {
+    const counter = new Counter({
+      workspace: 'FoCP26',
+      debug: true
     });
+
+    const response = await counter.up('views');
+    console.log('CounterAPI response:', response);
+    counterElement.textContent = response.data.up_count;
+  } catch (error) {
+    console.error('CounterAPI error:', {
+      message: error?.message,
+      status: error?.status,
+      code: error?.code,
+      error
+    });
+
+    counterElement.textContent = 'Zähler nicht verfügbar';
+  }
 </script>
 
 
