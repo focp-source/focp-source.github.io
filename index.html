@@ -388,28 +388,27 @@
 <script type="module">
     import { Counter } from 'https://cdn.jsdelivr.net/npm/counterapi/dist/counter.esm.min.js';
     
-    const counterElement = document.getElementById('view-counter');
-    
-    try {
-        // WICHTIG: 'FoCP26' muss als Text (String) in Anführungszeichen stehen
-        const counter = new Counter({ workspace: 'FoCP26', debug: true });
-        
-        // WICHTIG: 'views' muss ebenfalls ein String sein
-        const response = await counter.up('views');
-        
-        console.log('CounterAPI response:', response);
-        
-        // Aktualisiert für die aktuelle API-Version (nutzt .value)
-        counterElement.textContent = response.value; 
-    } catch (error) {
-        console.error('CounterAPI error:', { 
-            message: error?.message, 
-            status: error?.status, 
-            code: error?.code, 
-            error 
-        });
-        counterElement.textContent = 'Zähler nicht verfügbar';
-    }
+    // Verpacken in eine selbstaufrufende asynchrone Funktion
+    (async () => {
+        const counterElement = document.getElementById('view-counter');
+        if (!counterElement) return;
+
+        try {
+            const counter = new Counter({ workspace: 'FoCP26', debug: true });
+            
+            // API-Aufruf
+            const response = await counter.up('views');
+            console.log('CounterAPI response:', response);
+            
+            // CounterAPI v3 nutzt response.data.up_count, v2 nutzt response.value
+            // Diese Zeile deckt sicherheitshalber beide Varianten ab:
+            counterElement.textContent = response.data?.up_count || response.value || '0';
+            
+        } catch (error) {
+            console.error('CounterAPI error:', error);
+            counterElement.textContent = 'Zähler nicht verfügbar';
+        }
+    })();
 </script>
 
 
