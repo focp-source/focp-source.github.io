@@ -227,6 +227,17 @@
             opacity: 1; 
         }
 
+        .stats-container p {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #888888; 
+        }
+
+        .counter-badge {
+            vertical-align: middle;
+            border-radius: 4px;
+        }     
+
     </style>  
 </head> 
 <body> 
@@ -375,40 +386,44 @@
 
 </div>
 
+<!-- 1. Das HTML-Element für die Anzeige -->
+<div class="stats-container"> 
+    <p>This page has been viewed <span id="view-counter">...</span> times</p> 
+</div>
+
+<!-- 2. Einbinden der CounterAPI-Bibliothek -->
+<script src="https://jsdelivr.net"></script>
+
+<!-- 3. Die Logik zum Hochzählen -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const namespace = 'global-focp-cloud-physics-lab-2026';
-    const key = 'shared-global-counter';  
-    
-    const counterElement = document.getElementById('visit-count');
-    const views = ' '; 
+    const counterElement = document.getElementById('view-counter');
 
-    const apiUrl = `https://lyra.ooo{namespace}/${key}`;
+    try {
+        // Verbindung zu deinem Workspace
+        const counter = new Counter({ 
+            workspace: 'FoCP26'
+        }); 
 
-    fetch(apiUrl, { mode: 'cors' })
-       .then(response => {
-            if (!response.ok) throw new Error();
-            return response.json();
-        })
-       .then(result => {
-            if (result && typeof result.value !== 'undefined') {
-                counterElement.textContent = `${views}${result.value.toLocaleString('de-DE')}`;
-                counterElement.classList.add('visible');
-            } else {
-               throw new Error();
-            }
-        })
-        .catch(() => {
-            let localCount = localStorage.getItem('lab_global_fallback_counter') || 1; 
-            localCount = parseInt(localCount) + 1;
-            localStorage.setItem('lab_global_fallback_counter', localCount);
-
-            counterElement.textContent = `${views}${localCount.toLocaleString('de-DE')}`;
-            counterElement.classList.add('visible');
-        });
+        // Zähler hochzählen und Wert reinschreiben
+        counter.up('page-views')
+            .then(result => {
+                // Liest die aktuelle API-Datenstruktur aus
+                if (result && result.data && result.data.up_count !== undefined) {
+                    counterElement.textContent = result.data.up_count;
+                } else {
+                    counterElement.textContent = result.value || '0';
+                }
+            })
+            .catch(error => {
+                console.error('API Fehler:', error);
+                counterElement.textContent = 'Fehler beim Laden';
+            });
+    } catch (e) {
+        console.error('Initialisierungsfehler:', e);
+    }
 });
 </script>
-
 
 </body>
 </html>
