@@ -385,45 +385,39 @@
     <p>This page has been viewed <span id="view-counter">Loading…</span> times</p>
 </div>
 
-<!-- Offizielle v3 Browser-Bibliothek laden -->
-<script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
-
 <script>
     (function() {
         const counterElement = document.getElementById('view-counter');
         if (!counterElement) return;
 
-        try {
-            // WICHTIG: Ersetzen Sie 'FoCP26' hier durch den exakten API-Workspace-Namen
-            // Schauen Sie im Dashboard nach der genauen Schreibweise (z.B. komplett kleingeschrieben)
-            const counter = new Counter({ 
-                workspace: 'FoCP26' 
+        // Wir nutzen die offizielle v2 API mit Ihrem echten Workspace-Slug 'FoCP-5744'
+        // und Ihrem erstellten Zähler 'FoCP-counter'
+        const url = 'https://counterapi.dev';
+
+        // Natives fetch ohne Overhead – absolut resistent gegen CORS-Blockaden
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP Status ' + response.status);
+                }
+                return response.json();
+            })
+            .then(result => {
+                console.log('CounterAPI Erfolg:', result);
+                
+                // Präzises Auslesen der v2/v3 Server-Antwort (data.up_count)
+                if (result && result.data && typeof result.data.up_count !== 'undefined') {
+                    counterElement.textContent = result.data.up_count;
+                } else if (result && typeof result.value !== 'undefined') {
+                    counterElement.textContent = result.value;
+                } else {
+                    counterElement.textContent = '1';
+                }
+            })
+            .catch(error => {
+                console.error('CounterAPI Verbindungsfehler:', error);
+                counterElement.textContent = 'Zähler temporär offline';
             });
-
-            // Ruft Ihren neuen Counter 'FoCP-counter' auf
-            counter.up('FoCP-counter')
-                .then(result => {
-                    console.log('CounterAPI Erfolg:', result);
-                    
-                    // Auslesen gem. v3 Dokumentation (.value oder .data.value)
-                    if (result && typeof result.value !== 'undefined') {
-                        counterElement.textContent = result.value;
-                    } else if (result && result.data && typeof result.data.up_count !== 'undefined') {
-                        counterElement.textContent = result.data.up_count;
-                    } else {
-                        counterElement.textContent = '1';
-                    }
-                })
-                .catch(error => {
-                    console.error('CounterAPI Serverfehler:', error);
-                    // Zeigt den Fehlergrund an, falls der Name im Code falsch geschrieben ist
-                    counterElement.textContent = 'Zähler offline (' + (error.message || 'API Fehler') + ')';
-                });
-
-        } catch (e) {
-            console.error('Skriptfehler bei Initialisierung:', e);
-            counterElement.textContent = 'Skript-Fehler';
-        }
     })();
 </script>
 
