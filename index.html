@@ -385,41 +385,39 @@
     <p>This page has been viewed <span id="view-counter">Loading…</span> times</p>
 </div>
 
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
+<script type="module">
+    // Wir importieren das offizielle ESM-Modul der CounterAPI v3
+    import { Counter } from 'https://jsdelivr.net';
+
+    window.addEventListener('DOMContentLoaded', async () => {
         const counterElement = document.getElementById('view-counter');
         
-        // Direkte v2/v3 API-URL zu Ihrem Zähler
-        // FoCP26 = Ihr Workspace, views = Ihr bereits existierender Zähler
-        const url = 'https://counterapi.dev';
-
-        // Wir nutzen natives Fetch statt fehleranfälliger Bibliotheken
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('HTTP ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('CounterAPI Erfolg:', data);
-                
-                // Extrahiert den Zählerstand flexibel aus der API-Struktur
-                if (data && data.data && typeof data.data.up_count !== 'undefined') {
-                    counterElement.textContent = data.data.up_count;
-                } else if (data && typeof data.value !== 'undefined') {
-                    counterElement.textContent = data.value;
-                } else {
-                    counterElement.textContent = '1';
-                }
-            })
-            .catch(error => {
-                console.error('CounterAPI Fehler:', error);
-                counterElement.textContent = 'Zähler nicht verfügbar';
+        try {
+            // Initialisierung exakt nach v3-Standard
+            const counter = new Counter({ 
+                workspace: 'FoCP26',
+                debug: false 
             });
+
+            // Die Bibliothek übernimmt das korrekte URL-Routing im Hintergrund
+            const response = await counter.up('views');
+            console.log('CounterAPI Erfolg:', response);
+
+            // Strukturprüfung für Version 3 (Werte liegen in response.data.up_count)
+            if (response && response.data && typeof response.data.up_count !== 'undefined') {
+                counterElement.textContent = response.data.up_count;
+            } else if (response && typeof response.value !== 'undefined') {
+                counterElement.textContent = response.value;
+            } else {
+                counterElement.textContent = '1';
+            }
+
+        } catch (error) {
+            console.error('CounterAPI Fehler:', error);
+            counterElement.textContent = 'Zähler nicht verfügbar';
+        }
     });
 </script>
-
 
 </body>
 </html>
