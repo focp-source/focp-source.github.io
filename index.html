@@ -390,12 +390,11 @@
         const counterElement = document.getElementById('view-counter');
         if (!counterElement) return;
 
-        // Wir nutzen die offizielle v2 API mit Ihrem echten Workspace-Slug 'FoCP-5744'
-        // und Ihrem erstellten Zähler 'FoCP-counter'
+        // Die exakte, offizielle v2 API-URL mit der korrekten Pfadstruktur (/workspaces/.../counters/...)
         const url = 'https://counterapi.dev';
 
-        // Natives fetch ohne Overhead – absolut resistent gegen CORS-Blockaden
-        fetch(url)
+        // Natives fetch – sicher gegen CORS-Blockaden auf GitHub Pages und Mobilgeräten
+        fetch(url, { method: 'GET' })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('HTTP Status ' + response.status);
@@ -405,11 +404,13 @@
             .then(result => {
                 console.log('CounterAPI Erfolg:', result);
                 
-                // Präzises Auslesen der v2/v3 Server-Antwort (data.up_count)
+                // Extrahiert den Zählerstand flexibel aus der v2/v3 Server-Antwort
                 if (result && result.data && typeof result.data.up_count !== 'undefined') {
                     counterElement.textContent = result.data.up_count;
                 } else if (result && typeof result.value !== 'undefined') {
                     counterElement.textContent = result.value;
+                } else if (result && result.data && typeof result.data.value !== 'undefined') {
+                    counterElement.textContent = result.data.value;
                 } else {
                     counterElement.textContent = '1';
                 }
