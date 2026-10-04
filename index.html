@@ -385,57 +385,38 @@
     <p>This page has been viewed <span id="view-counter">Loading…</span> times</p>
 </div>
 
-<!-- Offizielle stabile Browser-Version -->
-<script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
-
 <script>
     window.addEventListener('DOMContentLoaded', () => {
         const counterElement = document.getElementById('view-counter');
         
-        try {
-            // Erkennt flexibel, wie das CDN die Klasse bereitstellt
-            const TargetCounter = typeof Counter !== 'undefined' ? Counter : (typeof CounterAPI !== 'undefined' ? CounterAPI.Counter : null);
-            
-            if (!TargetCounter) {
-                counterElement.textContent = "Bibliothek fehlt";
-                return;
-            }
+        // Direkte v2/v3 API-URL zu Ihrem Zähler
+        // FoCP26 = Ihr Workspace, views = Ihr bereits existierender Zähler
+        const url = 'https://counterapi.dev';
 
-            // Initialisierung Ihres Workspaces
-            const counter = new TargetCounter({ 
-                workspace: 'FoCP26',
-                accessToken: 'ut_FQCJpbl2ERYfjpLFrhGkiWe5yOHLATcIPKIUvYua',
-                debug: true
-            });
-            
-            // Aufruf des Counters
-            counter.up('views')
-                .then(response => {
-                    console.log('API Erfolg:', response);
-                    
-                    // Strukturprüfung gem. v3-Spezifikation (data.up_count)
-                    if (response && response.data && typeof response.data.up_count !== 'undefined') {
-                        counterElement.textContent = response.data.up_count;
-                    } else if (response && typeof response.value !== 'undefined') {
-                        counterElement.textContent = response.value;
-                    } else {
-                        counterElement.textContent = '0';
-                    }
-                })
-                .catch(error => {
-                    console.error('API-Fehler:', error);
-                    
-                    // Gibt den echten HTTP-Status aus (z.B. 404, 403, 400)
-                    const statusText = error.status ? ` (Status ${error.status})` : '';
-                    const msgText = error.message ? `: ${error.message}` : ' API lehnt ab';
-                    
-                    counterElement.textContent = "Fehler" + statusText + msgText;
-                });
+        // Wir nutzen natives Fetch statt fehleranfälliger Bibliotheken
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('CounterAPI Erfolg:', data);
                 
-        } catch (e) {
-            console.error('Initialisierungsfehler:', e);
-            counterElement.textContent = 'Skript-Fehler';
-        }
+                // Extrahiert den Zählerstand flexibel aus der API-Struktur
+                if (data && data.data && typeof data.data.up_count !== 'undefined') {
+                    counterElement.textContent = data.data.up_count;
+                } else if (data && typeof data.value !== 'undefined') {
+                    counterElement.textContent = data.value;
+                } else {
+                    counterElement.textContent = '1';
+                }
+            })
+            .catch(error => {
+                console.error('CounterAPI Fehler:', error);
+                counterElement.textContent = 'Zähler nicht verfügbar';
+            });
     });
 </script>
 
