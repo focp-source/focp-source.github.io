@@ -392,17 +392,19 @@
     if (!counterElement) return;
 
     try {
-      const counter = new Counter({ workspace: 'FoCP26' });
-      const response = await counter.up('FoCP-counter');
+      const counter = new Counter({ workspace: 'FoCP-5744' });
+      const response = await counter.up('first-counter-5744');
 
-      if (response?.data?.up_count == null) {
-        throw new Error('Die API-Antwort enthält keinen Zählerstand.');
-      }
+      console.log('Full CounterAPI response:', response);
+      console.log('value:', response?.value);
+      console.log('up_count:', response?.data?.up_count);
 
-      counterElement.textContent = response.data.up_count;
+      const count = response?.data?.up_count ?? response?.value;
+      counterElement.textContent =
+        count !== undefined ? count : 'Count field not found';
     } catch (error) {
-      console.error('CounterAPI-Fehler:', error);
-      counterElement.textContent = 'Zähler nicht verfügbar';
+      console.error('CounterAPI error:', error);
+      counterElement.textContent = 'Counter error';
     }
   })();
 </script>
