@@ -386,35 +386,40 @@
 </div>
 
 <script type="module">
-    // Wir importieren das offizielle ESM-Modul der CounterAPI v3
-    import { Counter } from 'https://jsdelivr.net';
+    // Wir importieren die offizielle, aktuelle CounterAPI v3 Bibliothek
+    import { Counter } from 'https://cdn.jsdelivr.net/npm/counterapi/dist/counter.esm.min.js';
 
-    window.addEventListener('DOMContentLoaded', async () => {
+    window.addEventListener('DOMContentLoaded', () => {
         const counterElement = document.getElementById('view-counter');
         
         try {
-            // Initialisierung exakt nach v3-Standard
+            // Initialisierung Ihres globalen, öffentlichen Workspaces
             const counter = new Counter({ 
-                workspace: 'FoCP26',
-                debug: false 
+                workspace: 'FoCP26'
             });
 
-            // Die Bibliothek übernimmt das korrekte URL-Routing im Hintergrund
-            const response = await counter.up('views');
-            console.log('CounterAPI Erfolg:', response);
-
-            // Strukturprüfung für Version 3 (Werte liegen in response.data.up_count)
-            if (response && response.data && typeof response.data.up_count !== 'undefined') {
-                counterElement.textContent = response.data.up_count;
-            } else if (response && typeof response.value !== 'undefined') {
-                counterElement.textContent = response.value;
-            } else {
-                counterElement.textContent = '1';
-            }
-
-        } catch (error) {
-            console.error('CounterAPI Fehler:', error);
-            counterElement.textContent = 'Zähler nicht verfügbar';
+            // Erhöht Ihren neuen Counter 'FoCP-counter' bei jedem Aufruf weltweit
+            counter.up('FoCP-counter')
+                .then(response => {
+                    console.log('CounterAPI Erfolg:', response);
+                    
+                    // Sicheres Auslesen der v3-Antwortstruktur (data.up_count)
+                    if (response && response.data && typeof response.data.up_count !== 'undefined') {
+                        counterElement.textContent = response.data.up_count;
+                    } else if (response && typeof response.value !== 'undefined') {
+                        counterElement.textContent = response.value;
+                    } else {
+                        counterElement.textContent = '1';
+                    }
+                })
+                .catch(error => {
+                    console.error('CounterAPI Server-Fehler:', error);
+                    counterElement.textContent = 'Zähler temporär offline';
+                });
+                
+        } catch (e) {
+            console.error('Initialisierungsfehler im Skript:', e);
+            counterElement.textContent = 'Zähler nicht geladen';
         }
     });
 </script>
