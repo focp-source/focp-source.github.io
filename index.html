@@ -386,26 +386,23 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
-
 <script>
   (async function () {
     const counterElement = document.getElementById('view-counter');
     if (!counterElement) return;
 
     try {
-      const counter = new Counter({ workspace: 'FoCP-5744' });
-      const response = await counter.up('first-counter-5744');
+      const counter = new Counter({ workspace: 'FoCP26' });
+      const response = await counter.up('FoCP-counter');
 
-      console.log('Full CounterAPI response:', response);
-      console.log('value:', response?.value);
-      console.log('up_count:', response?.data?.up_count);
+      if (response?.data?.up_count == null) {
+        throw new Error('Die API-Antwort enthält keinen Zählerstand.');
+      }
 
-      const count = response?.data?.up_count ?? response?.value;
-      counterElement.textContent =
-        count !== undefined ? count : 'Count field not found';
+      counterElement.textContent = response.data.up_count;
     } catch (error) {
-      console.error('CounterAPI error:', error);
-      counterElement.textContent = 'Counter error';
+      console.error('CounterAPI-Fehler:', error);
+      counterElement.textContent = 'Zähler nicht verfügbar';
     }
   })();
 </script>
