@@ -385,7 +385,7 @@
     <p>This page has been viewed <span id="view-counter">Loading…</span> times</p>
 </div>
 
-<!-- Laden der offiziellen v3 Browser-Bibliothek, die die URL im Hintergrund baut -->
+<!-- Laden der offiziellen v3 Browser-Bibliothek über das CDN -->
 <script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
 
 <script>
@@ -394,17 +394,17 @@
         if (!counterElement) return;
 
         try {
-            // Die Bibliothek nimmt den echten Slug entgegen
+            // Initialisierung mit Ihrem verifizierten Workspace-Slug
             const counter = new Counter({ 
                 workspace: 'FoCP-5744' 
             });
 
-            // Die Bibliothek fügt den Counternamen und das "/up" hinzu
-            counter.up('FoCP-counter')
+            // Aufruf Ihres exakten Counter-Slugs
+            counter.up('first-counter-5744')
                 .then(response => {
                     console.log('CounterAPI Erfolg:', response);
                     
-                    // Auslesen der Zahl gemäß aktuellem v3-Standard
+                    // Strukturprüfung gemäß v3-Spezifikation (data.up_count)
                     if (response && response.data && typeof response.data.up_count !== 'undefined') {
                         counterElement.textContent = response.data.up_count;
                     } else if (response && typeof response.value !== 'undefined') {
