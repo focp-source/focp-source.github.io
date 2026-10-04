@@ -382,47 +382,29 @@
 </div>
 
 <div class="stats-container">
-    <p>This page has been viewed <span id="view-counter">Loading…</span> times</p>
+  <p>This page has been viewed <span id="view-counter">Loading…</span> times</p>
 </div>
 
-<!-- Laden der offiziellen v3 Browser-Bibliothek über das CDN -->
-<script src="https://jsdelivr.net"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
 <script>
-    (function() {
-        const counterElement = document.getElementById('view-counter');
-        if (!counterElement) return;
+  (async function () {
+    const counterElement = document.getElementById('view-counter');
+    if (!counterElement) return;
 
-        try {
-            // Initialisierung mit Ihrem verifizierten Workspace-Slug
-            const counter = new Counter({ 
-                workspace: 'FoCP-5744' 
-            });
+    try {
+      const counter = new Counter({ workspace: 'FoCP-5744' });
+      const response = await counter.up('first-counter-5744');
 
-            // Aufruf Ihres exakten, im Dashboard ausgelesenen Counter-Slugs
-            counter.up('first-counter-5744')
-                .then(response => {
-                    console.log('CounterAPI Erfolg:', response);
-                    
-                    // Strukturprüfung gemäß v3-Spezifikation (data.up_count)
-                    if (response && response.data && typeof response.data.up_count !== 'undefined') {
-                        counterElement.textContent = response.data.up_count;
-                    } else if (response && typeof response.value !== 'undefined') {
-                        counterElement.textContent = response.value;
-                    } else {
-                        counterElement.textContent = '1';
-                    }
-                })
-                .catch(error => {
-                    console.error('CounterAPI Serverfehler:', error);
-                    counterElement.textContent = 'Zähler offline: ' + (error.message || 'API lehnt ab');
-                });
+      if (response?.data?.up_count == null) {
+        throw new Error('Die API-Antwort enthält keinen Zählerstand.');
+      }
 
-        } catch (e) {
-            console.error('Skriptfehler bei Initialisierung:', e);
-            counterElement.textContent = 'Skript-Fehler';
-        }
-    })();
+      counterElement.textContent = response.data.up_count;
+    } catch (error) {
+      console.error('CounterAPI-Fehler:', error);
+      counterElement.textContent = 'Zähler nicht verfügbar';
+    }
+  })();
 </script>
 
 </body>
