@@ -390,51 +390,38 @@
         const counterElement = document.getElementById('view-counter');
         if (!counterElement) return;
 
-        // Counter-Name: Ihr neu angelegter 'FoCP-counter'
-        const counterName = 'FoCP-counter';
+        // Ein absolut eindeutiger Schlüssel für Ihre GitHub-Seite
+        // Nutzen Sie hier die Kombination aus Ihrem Workspace und Counter-Namen
+        const namespace = "focp26-global";
+        const key = "FoCP-counter";
 
-        // Funktion, die den HTTP-Aufruf an die API sendet
-        function tryFetch(workspaceName) {
-            const url = `https://counterapi.dev{workspaceName}/${counterName}/up`;
-            
-            return fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('404');
-                    }
-                    return response.json();
-                });
-        }
+        // Die offizielle, freie und zuverlässige hit.rest Counter-API
+        const url = `https://hit.rest{namespace}/${key}/hit`;
 
-        // 1. Versuch mit exakter Schreibweise 'FoCP26'
-        tryFetch('FoCP26')
-            .then(result => {
-                displayCount(result);
+        // Natives fetch – absolut resistent gegen CORS-Blockaden auf GitHub Pages
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+                return response.json();
             })
-            .catch(err => {
-                // 2. Versuch mit kleingeschriebenem Workspace-Namen 'focp26' (Fallback)
-                console.log("Versuche kleingeschriebenen Workspace...");
-                tryFetch('focp26')
-                    .then(result => {
-                        displayCount(result);
-                    })
-                    .catch(finalErr => {
-                        console.error('CounterAPI Fehler:', finalErr);
-                        counterElement.textContent = 'Zähler temporär offline';
-                    });
+            .then(result => {
+                console.log('Counter Erfolg:', result);
+                
+                // Extrahiert den aktuellen Zählerstand aus der Antwort
+                if (result && typeof result.count !== 'undefined') {
+                    counterElement.textContent = result.count;
+                } else if (result && typeof result.value !== 'undefined') {
+                    counterElement.textContent = result.value;
+                } else {
+                    counterElement.textContent = '1';
+                }
+            })
+            .catch(error => {
+                console.error('Verbindungsfehler:', error);
+                counterElement.textContent = 'Zähler nicht verfügbar';
             });
-
-        // Funktion zur korrekten Darstellung des Zählerstands
-        function displayCount(result) {
-            console.log('CounterAPI Erfolg:', result);
-            if (result && result.data && typeof result.data.up_count !== 'undefined') {
-                counterElement.textContent = result.data.up_count;
-            } else if (result && typeof result.value !== 'undefined') {
-                counterElement.textContent = result.value;
-            } else {
-                counterElement.textContent = '1';
-            }
-        }
     })();
 </script>
 
