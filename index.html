@@ -385,41 +385,53 @@
     <p>This page has been viewed <span id="view-counter">Loading…</span> times</p>
 </div>
 
-<script type="module">
-    // Import der offiziellen CounterAPI JavaScript-Bibliothek
-    import { Counter } from 'https://cdn.jsdelivr.net/npm/counterapi/dist/counter.esm.min.js';
+<!-- Wir laden die ausfallsichere Browser-Version der CounterAPI -->
+<script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
 
-    const counterElement = document.getElementById('view-counter');
-    
-    try {
-        // Initialisierung Ihres öffentlichen globalen Workspaces
-        const counter = new Counter({ 
-            workspace: 'FoCP26' 
-        });
+<script>
+    // Diese Funktion läuft sofort, sobald das HTML bereitsteht
+    (function() {
+        const counterElement = document.getElementById('view-counter');
+        if (!counterElement) return;
 
-        // Globaler Aufruf Ihres neuen Counters 'FoCP-counter'
-        counter.up('FoCP-counter')
-            .then(response => {
-                console.log('CounterAPI Erfolg:', response);
-                
-                // Flexibles Auslesen des Zählerstands (unterstützt alle API-Versionen)
-                if (response && response.data && typeof response.data.up_count !== 'undefined') {
-                    counterElement.textContent = response.data.up_count;
-                } else if (response && typeof response.value !== 'undefined') {
-                    counterElement.textContent = response.value;
-                } else {
-                    counterElement.textContent = '1';
-                }
-            })
-            .catch(error => {
-                console.error('CounterAPI Server-Fehler:', error);
-                counterElement.textContent = 'Zähler temporär offline';
-            });
+        try {
+            // Prüfung, unter welchem globalen Namen die v3 Bibliothek bereitgestellt wird
+            const CounterClass = typeof Counter !== 'undefined' ? Counter : (typeof CounterAPI !== 'undefined' ? CounterAPI.Counter : null);
             
-    } catch (e) {
-        console.error('Initialisierungsfehler im Skript:', e);
-        counterElement.textContent = 'Zähler-Fehler';
-    }
+            if (!CounterClass) {
+                counterElement.textContent = "Bibliothek blockiert";
+                return;
+            }
+
+            // Initialisierung Ihres öffentlichen Workspaces
+            const counter = new CounterClass({ 
+                workspace: 'FoCP26' 
+            });
+
+            // Hochzählen des neuen globalen Counters
+            counter.up('FoCP-counter')
+                .then(response => {
+                    console.log('CounterAPI Erfolg:', response);
+                    
+                    // Sicheres Auslesen des Werts gemäß v3-Spezifikation (response.data.up_count)
+                    if (response && response.data && typeof response.data.up_count !== 'undefined') {
+                        counterElement.textContent = response.data.up_count;
+                    } else if (response && typeof response.value !== 'undefined') {
+                        counterElement.textContent = response.value;
+                    } else {
+                        counterElement.textContent = '1';
+                    }
+                })
+                .catch(error => {
+                    console.error('CounterAPI Serverfehler:', error);
+                    counterElement.textContent = 'Zähler offline';
+                });
+
+        } catch (e) {
+            console.error('Skriptfehler bei Initialisierung:', e);
+            counterElement.textContent = 'Zähler-Fehler';
+        }
+    })();
 </script>
 
 </body>
