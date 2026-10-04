@@ -386,7 +386,7 @@
 </div>
 
 <!-- Laden der offiziellen v3 Browser-Bibliothek über das CDN -->
-<script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
+<script src="https://jsdelivr.net"></script>
 
 <script>
     (function() {
@@ -399,7 +399,7 @@
                 workspace: 'FoCP-5744' 
             });
 
-            // Aufruf Ihres exakten Counter-Slugs
+            // Aufruf Ihres exakten, im Dashboard ausgelesenen Counter-Slugs
             counter.up('first-counter-5744')
                 .then(response => {
                     console.log('CounterAPI Erfolg:', response);
