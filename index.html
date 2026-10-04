@@ -385,43 +385,45 @@
     <p>This page has been viewed <span id="view-counter">Loading…</span> times</p>
 </div>
 
+<!-- Offizielle v3 Browser-Bibliothek laden -->
+<script src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
+
 <script>
     (function() {
         const counterElement = document.getElementById('view-counter');
         if (!counterElement) return;
 
-        // Ein absolut eindeutiger Schlüssel für Ihre GitHub-Seite
-        // Nutzen Sie hier die Kombination aus Ihrem Workspace und Counter-Namen
-        const namespace = "FoCP26";
-        const key = "FoCP-counter";
-
-        // Die offizielle, freie und zuverlässige hit.rest Counter-API
-        const url = `https://hit.rest{namespace}/${key}/hit`;
-
-        // Natives fetch – absolut resistent gegen CORS-Blockaden auf GitHub Pages
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('HTTP ' + response.status);
-                }
-                return response.json();
-            })
-            .then(result => {
-                console.log('Counter Erfolg:', result);
-                
-                // Extrahiert den aktuellen Zählerstand aus der Antwort
-                if (result && typeof result.count !== 'undefined') {
-                    counterElement.textContent = result.count;
-                } else if (result && typeof result.value !== 'undefined') {
-                    counterElement.textContent = result.value;
-                } else {
-                    counterElement.textContent = '1';
-                }
-            })
-            .catch(error => {
-                console.error('Verbindungsfehler:', error);
-                counterElement.textContent = 'Zähler nicht verfügbar';
+        try {
+            // WICHTIG: Ersetzen Sie 'FoCP26' hier durch den exakten API-Workspace-Namen
+            // Schauen Sie im Dashboard nach der genauen Schreibweise (z.B. komplett kleingeschrieben)
+            const counter = new Counter({ 
+                workspace: 'FoCP26' 
             });
+
+            // Ruft Ihren neuen Counter 'FoCP-counter' auf
+            counter.up('FoCP-counter')
+                .then(result => {
+                    console.log('CounterAPI Erfolg:', result);
+                    
+                    // Auslesen gem. v3 Dokumentation (.value oder .data.value)
+                    if (result && typeof result.value !== 'undefined') {
+                        counterElement.textContent = result.value;
+                    } else if (result && result.data && typeof result.data.up_count !== 'undefined') {
+                        counterElement.textContent = result.data.up_count;
+                    } else {
+                        counterElement.textContent = '1';
+                    }
+                })
+                .catch(error => {
+                    console.error('CounterAPI Serverfehler:', error);
+                    // Zeigt den Fehlergrund an, falls der Name im Code falsch geschrieben ist
+                    counterElement.textContent = 'Zähler offline (' + (error.message || 'API Fehler') + ')';
+                });
+
+        } catch (e) {
+            console.error('Skriptfehler bei Initialisierung:', e);
+            counterElement.textContent = 'Skript-Fehler';
+        }
     })();
 </script>
 
