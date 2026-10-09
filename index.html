@@ -124,13 +124,61 @@
             line-height: 1.4;
         }
         
-        .facilitated-studies-box {
-            background-color: #fcfcfc; 
-            border: 1px solid #e3e3e3; 
-            border-left: 5px solid #E34234; 
-            padding: 26px;
-            margin: 40px 0;
-        }
+    .facilitated-studies-box {
+        background-color: #fcfcfc;
+        border: 1px solid #e3e3e3;
+        border-left: 5px solid #0066cc;
+        padding: 26px;
+        margin: 40px 0;
+        font-family: system-ui, -apple-system, sans-serif; /* Für saubere Web-Darstellung */
+    }
+
+    .facilitated-studies-box .box-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    .facilitated-studies-box .publications-list {
+        list-style: none;  
+        padding: 0;
+        margin: 0;
+    }
+
+    .facilitated-studies-box .publications-list li {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #4a4a4a;
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid #eeeeee;  
+    }
+
+    .facilitated-studies-box .publications-list li:last-child {
+        padding-bottom: 0;
+        margin-bottom: 0;
+        border-bottom: none;
+    }
+
+ 
+    .facilitated-studies-box .pub-type {
+        font-weight: 500;
+        color: #7f8c8d;
+    }
+
+    .facilitated-studies-box a {
+        color: #0066cc;
+        text-decoration: none;
+        word-break: break-all;
+        transition: color 0.2s ease;
+    }
+
+    .facilitated-studies-box a:hover {
+        color: #0066cc;
+        text-decoration: underline;
+    }
 
         .box-title {
             font-weight: 600;
@@ -261,7 +309,7 @@
     
     <div class="facilitated-studies-box"> 
         <p class="box-title">The following research studies were facilitated by the FoCP:</p> 
-        <ul> 
+        <ul class="publications-list"> 
             <li> 
                 The representation of gravity wave activity in models of cirrus ice formation [preprint]<br>  
                 <em>EGUsphere</em> <strong>26</strong>, 
@@ -270,25 +318,35 @@
         </ul> 
     </div>
 
-    <h2>Opinion</h2>
+    <h2>Viewpoints</h2>
 
-        <h3>Economic effect of contrails on solar energy, climate and agriculture (August 2019)</h3>
+    <div class="facilitated-studies-box">
+        <p class="box-title">The following opinion pieces are available as features, studies, essays, or commentaries:</p>        
+        <ul class="publications-list">
+            <li>
+                <strong>Economic effect of contrails on solar energy, climate and agriculture</strong><br>
+                <span class="pub-type">August 2019: </span>                  
+                <a href="https://www.youtube.com/watch?v=X1iIYOXa8o8" target="_blank" rel="noopener noreferrer">Stolen Light</a>
+            </li>
+            <li>
+                <strong>Reflections on the pandemic</strong><br>
+                <span class="pub-type">April 2020: </span>                  
+                <a href="Simulating Epidemics With a Probabilistic Toy Model.pdf" target="_blank" rel="noopener noreferrer">Simulating Epidemics With a Probabilistic Toy Model</a>
+            </li>
+            <li>
+                <strong>Relationship between soot emissions from aircraft engines and changes in high cloudiness</strong><br>
+                <span class="pub-type">July 2021: </span>                 
+                <a href="https://communities.springernature.com/posts/does-aircraft-soot-matter-for-the-climate-impact-of-aviation" target="_blank" rel="noopener noreferrer">Does Aircraft Soot Matter for the Climate Impact of Aviation?</a>
+            </li>
+            <li>
+                <strong>Climate effects of aviation</strong><br>
+                <span class="pub-type">September 2026: </span> 
+                <a href="opinion-0926.html">Impact of aviation on global climate change</a>
+            </li>
+        </ul>
+    </div>
 
-        Feature: <a href="https://www.youtube.com/watch?v=X1iIYOXa8o8" target="_blank" rel="noopener noreferrer">Stolen Light</a> 
-
-        <h3>Reflections on the pandemic (April 2020)</h3>
-
-        Study: <a href="Simulating Epidemics With a Probabilistic Toy Model.pdf" target="_blank" rel="noopener noreferrer">Simulating Epidemics With a Probabilistic Toy Model</a>       
-
-        <h3>Relationship between soot emissions from aircraft engines and changes in high cloudiness (July 2021)</h3>
-
-        Essay: <a href="https://communities.springernature.com/posts/does-aircraft-soot-matter-for-the-climate-impact-of-aviation" target="_blank" rel="noopener noreferrer">Does Aircraft Soot Matter for the Climate Impact of Aviation? </a> 
-
-        <h3>Impact of aviation on global climate change (September 2026)</h3>
-
-        Viewpoint: <a href="opinion-0926.html">Opinion 09/26</a> 
-
-     <h2>Places</h2>
+    <h2>Places</h2>
     
     ... where science was pondered, nature embraced, journeys shared, and friendships formed
 
